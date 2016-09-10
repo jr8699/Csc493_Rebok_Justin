@@ -15,6 +15,7 @@ public class WorldRenderer implements Disposable{
 		this.worldController = worldController;
 		init();
 	}
+	
 	private void init() {
 	    batch = new SpriteBatch();
 	    camera = new OrthographicCamera(Constants.VIEWPORT_WIDTH, Constants.VIEWPORT_HEIGHT);

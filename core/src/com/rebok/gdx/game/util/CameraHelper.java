@@ -14,42 +14,42 @@ public class CameraHelper {
 	
 	private Sprite target;
 	
-	public CameraHelper () {
+	public CameraHelper() {
 		position = new Vector2();
 		zoom = 1.0f;
 	}
 	
-	public void update (float deltaTime) {
+	public void update(float deltaTime) {
 		if (!hasTarget()) return;
 	    position.x = target.getX() + target.getOriginX();
 	    position.y = target.getY() + target.getOriginY();
 	}
 	
-	public void setPosition (float x, float y) {
+	public void setPosition(float x, float y) {
 	    this.position.set(x, y);
 	}
 	
-	public Vector2 getPosition () { return position; }
+	public Vector2 getPosition() { return position; }
 	
-	public void addZoom (float amount) { setZoom(zoom + amount); }
+	public void addZoom(float amount) { setZoom(zoom + amount); }
 	
-	public void setZoom (float zoom) {
+	public void setZoom(float zoom) {
 	    this.zoom = MathUtils.clamp(zoom, MAX_ZOOM_IN, MAX_ZOOM_OUT);
 	}
 	
-	public float getZoom () { return zoom; }
+	public float getZoom() { return zoom; }
 	
-	public void setTarget (Sprite target) { this.target = target; }
+	public void setTarget(Sprite target) { this.target = target; }
 	
-	public Sprite getTarget () { return target; }
+	public Sprite getTarget() { return target; }
 	
-	public boolean hasTarget () { return target != null; }
+	public boolean hasTarget() { return target != null; }
 	
-	public boolean hasTarget (Sprite target) {
+	public boolean hasTarget(Sprite target) {
 	    return hasTarget() && this.target.equals(target);
 	}
 	
-	public void applyTo (OrthographicCamera camera) {
+	public void applyTo(OrthographicCamera camera) {
 	    camera.position.x = position.x;
 	    camera.position.y = position.y;
 	    camera.zoom = zoom;
