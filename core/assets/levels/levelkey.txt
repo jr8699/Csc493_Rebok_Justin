@@ -1,0 +1,5 @@
+CanyonBunny
+Green - walkable ground
+White - spawn
+Purple - feather
+Yellow - coin
