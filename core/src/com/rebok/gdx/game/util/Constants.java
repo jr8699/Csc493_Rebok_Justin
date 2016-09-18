@@ -14,5 +14,5 @@ public class Constants {
 	public static final float VIEWPORT_HEIGHT = 5.0f;
 	
 	//Assets atlas
-    public static final String TEXTURE_ATLAS_OBJECTS = "../rebok-gdx-game-core/assets/canyonbunny.atlas";
+    public static final String TEXTURE_ATLAS_OBJECTS = "../rebok-gdx-game-core/assets/rebok-mygame.atlas";
 }

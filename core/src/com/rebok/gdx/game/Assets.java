@@ -16,10 +16,10 @@ public class Assets implements Disposable, AssetErrorListener {
     public static final Assets instance = new Assets(); //Assets instance (singleton)
     private AssetManager assetManager; //asset manager instance
     
-    public AssetBunny bunny; //Bunny asset
+    public AssetWaterPlayer waterPlayer; //Bunny asset
     public AssetRock rock; //Rock asset
     public AssetGoldCoin goldCoin; //Coin asset
-    public AssetFeather feather; //Feather asset
+    public AssetBlocks blocks; //Feather asset
     public AssetLevelDecoration levelDecoration; //Level decorations asset
     
     
@@ -50,10 +50,10 @@ public class Assets implements Disposable, AssetErrorListener {
 	    }
 	    
 	    // create game resource objects
-	    bunny = new AssetBunny(atlas);
+	    waterPlayer = new AssetWaterPlayer(atlas);
 	    rock = new AssetRock(atlas);
 	    goldCoin = new AssetGoldCoin(atlas);
-	    feather = new AssetFeather(atlas);
+	    blocks = new AssetBlocks(atlas);
 	    levelDecoration = new AssetLevelDecoration(atlas);
 	}
     
@@ -90,15 +90,15 @@ public class Assets implements Disposable, AssetErrorListener {
 	 * @author Justin
 	 *
 	 */
-	public class AssetBunny {
-	    public final AtlasRegion head; //head asset
+	public class AssetWaterPlayer {
+	    public final AtlasRegion waterPlayer; //player
 	    
 	    /**
 	     * Constructor for the bunny head
 	     * @param atlas
 	     */
-	    public AssetBunny (TextureAtlas atlas) {
-	        head = atlas.findRegion("bunny_head");
+	    public AssetWaterPlayer (TextureAtlas atlas) {
+	    	waterPlayer = atlas.findRegion("player");
 	    }
 	}
 	
@@ -108,16 +108,14 @@ public class Assets implements Disposable, AssetErrorListener {
 	 *
 	 */
 	public class AssetRock {
-	    public final AtlasRegion edge; //rock edge
-	    public final AtlasRegion middle; //middle of rock
+	    public final AtlasRegion ground; //walkable rock
 	    
 	    /**
-	     * Constructor for the rocks
+	     * Constructor for the rock
 	     * @param atlas
 	     */
 	    public AssetRock (TextureAtlas atlas) {
-	        edge = atlas.findRegion("rock_edge");
-	        middle = atlas.findRegion("rock_middle");
+	        ground = atlas.findRegion("ground");
 	    }
 	}
 	
@@ -134,7 +132,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	     * @param atlas
 	     */
 	    public AssetGoldCoin (TextureAtlas atlas) {
-	        goldCoin = atlas.findRegion("item_gold_coin");
+	        goldCoin = atlas.findRegion("goldCoin5");
 	    }
 	}
 	
@@ -143,15 +141,17 @@ public class Assets implements Disposable, AssetErrorListener {
 	 * @author Justin
 	 *
 	 */
-	public class AssetFeather {
-	    public final AtlasRegion feather; //feather
+	public class AssetBlocks {
+	    public final AtlasRegion ice; //ice
+	    public final AtlasRegion lava_block; //lavablock
 	    
 	    /**
 	     * Constructor for the feather asset
 	     * @param atlas
 	     */
-	    public AssetFeather (TextureAtlas atlas) {
-	        feather = atlas.findRegion("item_feather");
+	    public AssetBlocks (TextureAtlas atlas) {
+	        ice = atlas.findRegion("ice_block");
+	        lava_block = atlas.findRegion("lava_block");
 	    }
 	}
 	
@@ -162,23 +162,17 @@ public class Assets implements Disposable, AssetErrorListener {
 	 */
 	public class AssetLevelDecoration {
 	    public final AtlasRegion cloud01; //Cloud 1
-	    public final AtlasRegion cloud02; //Cloud 2
-	    public final AtlasRegion cloud03; //Cloud 3
-	    public final AtlasRegion mountainLeft; //Left mountain
-	    public final AtlasRegion mountainRight; //Right mountain
-	    public final AtlasRegion waterOverlay; //water
+	    public final AtlasRegion mountain; //mountain
+	    public final AtlasRegion lavaOverlay; //water
 	    
 	    /**
 	     * Constructor for the level decorations
 	     * @param atlas
 	     */
 	    public AssetLevelDecoration (TextureAtlas atlas) {
-	    	cloud01 = atlas.findRegion("cloud01");
-	        cloud02 = atlas.findRegion("cloud02");
-	        cloud03 = atlas.findRegion("cloud03");
-	        mountainLeft = atlas.findRegion("mountain_left");
-	        mountainRight = atlas.findRegion("mountain_right");
-	        waterOverlay = atlas.findRegion("water_overlay");
+	    	cloud01 = atlas.findRegion("cloud-1");
+	        mountain = atlas.findRegion("background");
+	        lavaOverlay = atlas.findRegion("lava_dangerous");
 	    }
 	}
 	

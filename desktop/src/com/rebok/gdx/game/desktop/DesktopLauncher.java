@@ -28,7 +28,7 @@ public class DesktopLauncher {
 	          settings.maxHeight = 1024;
 	          settings.duplicatePadding = false;
 	          settings.debug = drawDebugOutline;
-	          TexturePacker.process(settings, "assets-raw/images", "../rebok-gdx-game-core/assets", "canyonbunny.atlas");
+	          TexturePacker.process(settings, "assets-raw/images", "../rebok-gdx-game-core/assets", "rebok-mygame.atlas");
 	     }
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
