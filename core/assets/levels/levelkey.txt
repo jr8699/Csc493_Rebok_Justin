@@ -1,0 +1,6 @@
+MyGame:
+Green: walkable ground
+Yellow: coin
+White: spawn
+Red: lava block
+Cyan: ice block
