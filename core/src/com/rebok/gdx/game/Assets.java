@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 import com.rebok.gdx.game.util.Constants;
@@ -21,6 +22,7 @@ public class Assets implements Disposable, AssetErrorListener {
     public AssetGoldCoin goldCoin; //Coin asset
     public AssetFeather feather; //Feather asset
     public AssetLevelDecoration levelDecoration; //Level decorations asset
+    public AssetFonts fonts;
     
     
     // singleton: prevent instantiation from other classes
@@ -43,12 +45,13 @@ public class Assets implements Disposable, AssetErrorListener {
 	    	Gdx.app.debug(TAG, "asset: " + a);
 	    
 	    TextureAtlas atlas = assetManager.get(Constants.TEXTURE_ATLAS_OBJECTS);
-	    
+	     
 	    // enable texture filtering for pixel smoothing
 	    for (Texture t : atlas.getTextures()) {
 	    	t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 	    }
 	    
+	    fonts = new AssetFonts();
 	    // create game resource objects
 	    bunny = new AssetBunny(atlas);
 	    rock = new AssetRock(atlas);
@@ -58,11 +61,14 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
     
     /**
-     * For destroying the assetManager
+     * For destroying the assetManager and fonts
      */
 	@Override
 	public void dispose () {
 		assetManager.dispose();
+	    fonts.defaultSmall.dispose();
+	    fonts.defaultNormal.dispose();
+	    fonts.defaultBig.dispose();
 	}
 	
 	/**
@@ -182,5 +188,27 @@ public class Assets implements Disposable, AssetErrorListener {
 	    }
 	}
 	
-	
+	public class AssetFonts {
+		  public final BitmapFont defaultSmall;
+		  public final BitmapFont defaultNormal;
+		  public final BitmapFont defaultBig;
+		  
+		  public AssetFonts () {
+			  // create three fonts using Libgdx's 15px bitmap font
+		      defaultSmall = new BitmapFont(Gdx.files.internal("assets-raw/images/arial-15.fnt"), true);
+		      defaultNormal = new BitmapFont(Gdx.files.internal("assets-raw/images/arial-15.fnt"), true);
+		      defaultBig = new BitmapFont(Gdx.files.internal("assets-raw/images/arial-15.fnt"), true);
+		      // set font sizes
+		      defaultSmall.getData().setScale(.75f,.75f);
+		      defaultNormal.getData().setScale(1.0f,1.0f);
+		      defaultBig.getData().setScale(2.0f,2.0f);
+		      // enable linear texture filtering for smooth fonts
+		      defaultSmall.getRegion().getTexture().setFilter(
+		          TextureFilter.Linear, TextureFilter.Linear);
+		      defaultNormal.getRegion().getTexture().setFilter(
+		          TextureFilter.Linear, TextureFilter.Linear);
+		      defaultBig.getRegion().getTexture().setFilter(
+		          TextureFilter.Linear, TextureFilter.Linear);
+		    }
+	}
 }
