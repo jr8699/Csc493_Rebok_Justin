@@ -4,7 +4,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.rebok.gdx.game.objects.AbstractGameObject;
 
+/**
+ * Settings and key functions for operation of the camera
+ * @author Justin
+ *
+ */
 /**
  * Settings and key functions for operation of the camera
  * @author Justin
@@ -16,7 +22,7 @@ public class CameraHelper {
 	private final float MAX_ZOOM_OUT = 10.0f; //Maximum zoom out value
 	private Vector2 position; //Current camera position
 	private float zoom; //Current zoom
-	private Sprite target; //Current target
+	private AbstractGameObject target; //Current target
 	
 	public CameraHelper() {
 		position = new Vector2();
@@ -29,8 +35,8 @@ public class CameraHelper {
 	 */
 	public void update(float deltaTime) {
 		if (!hasTarget()) return;
-	    position.x = target.getX() + target.getOriginX();
-	    position.y = target.getY() + target.getOriginY();
+	    position.x = target.position.x + target.origin.x;
+	    position.y = target.position.y + target.origin.y;
 	}
 	
 	/**
@@ -72,13 +78,13 @@ public class CameraHelper {
 	 * Set the camera's target
 	 * @param target
 	 */
-	public void setTarget(Sprite target) { this.target = target; }
+	public void setTarget(AbstractGameObject target) { this.target = target; }
 	
 	/**
 	 * Get the camera's current target
 	 * @return
 	 */
-	public Sprite getTarget() { return target; }
+	public AbstractGameObject getTarget() { return target; }
 	
 	/**
 	 * Does the camera have a current target
@@ -91,7 +97,7 @@ public class CameraHelper {
 	 * @param target
 	 * @return
 	 */
-	public boolean hasTarget(Sprite target) {
+	public boolean hasTarget(AbstractGameObject target) {
 	    return hasTarget() && this.target.equals(target);
 	}
 	

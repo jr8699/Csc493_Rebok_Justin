@@ -14,7 +14,7 @@ import com.rebok.gdx.game.RebokGdxGame;
 public class DesktopLauncher {
 	
     private static boolean rebuildAtlas = true; //Controls if we rebuild the atlas every time on startup
-    private static boolean drawDebugOutline = true; //Debugging for the atlas
+    private static boolean drawDebugOutline = false; //Debugging for the atlas
     
     /**
      * Main method for using the desktop version of the game.
