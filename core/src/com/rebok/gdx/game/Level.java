@@ -6,9 +6,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.Clouds;
+import com.rebok.gdx.game.objects.GoldCoin;
+import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.LavaOverlay;
 import com.rebok.gdx.game.objects.Mountains;
 import com.rebok.gdx.game.objects.Rock;
+import com.rebok.gdx.game.objects.WaterPlayer;
 
 /**
  * Our level loader
@@ -17,6 +20,10 @@ import com.rebok.gdx.game.objects.Rock;
  */
 public class Level {
 	public static final String TAG = Level.class.getName(); //libGDX tag
+	
+	public WaterPlayer waterPlayer; //the player
+	public Array<GoldCoin> goldcoins; //all the coins on the level
+	public Array<LavaBlock> lavaBlocks; //all the lava blocks on the level
 	
 	public enum BLOCK_TYPE { //Block type enumerable, All data for the level
 	    EMPTY(0, 0, 0), // black
@@ -57,8 +64,12 @@ public class Level {
 	 * @param filename
 	 */
 	private void init (String filename) {
+		// player character
+		waterPlayer = null;
 		// objects
 	    rocks = new Array<Rock>();
+	    goldcoins = new Array<GoldCoin>();
+	    lavaBlocks = new Array<LavaBlock>();
 	    // load image file that represents the level data
 	    Pixmap pixmap = new Pixmap(Gdx.files.internal(filename));
 	    // scan pixels from top-left to bottom-right
@@ -91,17 +102,28 @@ public class Level {
 	    				}
 	    			}
 	    			// player spawn point
-	    			else if
-	    				(BLOCK_TYPE.PLAYER_SPAWNPOINT.sameColor(currentPixel)) {
+	    			else if (BLOCK_TYPE.PLAYER_SPAWNPOINT.sameColor(currentPixel)) {
+	    		        obj = new WaterPlayer();
+	    		        offsetHeight = -3.0f;
+	    		        obj.position.set(pixelX,baseHeight * obj.dimension.y + offsetHeight);
+	    		        waterPlayer = (WaterPlayer)obj;
 	    			}
 	    			//ice block
 	    			else if (BLOCK_TYPE.ITEM_ICE_BLOCK.sameColor(currentPixel)) {
 	    			}
 	    			//lava block
 	    			else if (BLOCK_TYPE.ITEM_LAVA_BLOCK.sameColor(currentPixel)){
+	    				obj = new LavaBlock();
+	    		        offsetHeight = -1.5f;
+	    		        obj.position.set(pixelX,baseHeight * obj.dimension.y + offsetHeight);
+	    		        lavaBlocks.add((LavaBlock)obj);
 	    			}
 	    			// gold coin
 	    			else if (BLOCK_TYPE.ITEM_GOLD_COIN.sameColor(currentPixel)) {
+	    		        obj = new GoldCoin();
+	    		        offsetHeight = -1.5f;
+	    		        obj.position.set(pixelX,baseHeight * obj.dimension.y + offsetHeight);
+	    		        goldcoins.add((GoldCoin)obj);
 	    			}
 	    			// unknown object/pixel color
 	    			else {
@@ -139,9 +161,32 @@ public class Level {
 	    // Draw Rocks
 	    for (Rock rock : rocks)
 	      rock.render(batch);
+	    // Draw Gold Coins
+	    for (GoldCoin goldCoin : goldcoins)
+	        goldCoin.render(batch);
+	    // Draw lavaBlocks
+	    for (LavaBlock lava : lavaBlocks)
+	    	lava.render(batch);
+	    // Draw Player Character
+	    waterPlayer.render(batch);
 	    // Draw Water Overlay
 	    lavaOverlay.render(batch);
 	    // Draw Clouds
 	    clouds.render(batch);
 	}
+	
+	/**
+	 * Update all the objects on the level
+	 * @param deltaTime
+	 */
+	public void update (float deltaTime) {
+		waterPlayer.update(deltaTime);
+		for(Rock rock : rocks)
+		    rock.update(deltaTime);
+		for(GoldCoin goldCoin : goldcoins)
+		    goldCoin.update(deltaTime);
+		for(LavaBlock lava : lavaBlocks)
+			lava.update(deltaTime);
+		clouds.update(deltaTime);
+}
 }

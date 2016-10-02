@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.rebok.gdx.game.util.Constants;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -42,8 +43,9 @@ public class WorldRenderer implements Disposable{
 	 * Used to render stuff, only the world and gui at this moment
 	 */
 	public void render () {
-		  renderWorld(batch);
-		  renderGui(batch);
+		
+		renderWorld(batch);
+		renderGui(batch);
 	}
 	
 	/**
@@ -131,12 +133,54 @@ public class WorldRenderer implements Disposable{
 		  // draw collected gold coins icon + text
 		  // (anchored to top left edge)
 		  renderGuiScore(batch);
+		  // draw collected feather icon (anchored to top left edge)
+		  renderGuiLavaPowerup(batch);
 		  // draw extra lives icon + text (anchored to top right edge)
 		  renderGuiExtraLive(batch);
 		  // draw FPS text (anchored to bottom right edge)
 		  renderGuiFpsCounter(batch);
+		  // draw game over text
+		  renderGuiGameOverMessage(batch);
 		  batch.end();
 	}
+	/**
+	 * Render the game over message to be displayed when the player loses
+	 * @param batch
+	 */
+	private void renderGuiGameOverMessage (SpriteBatch batch) {
+		  float x = cameraGUI.viewportWidth / 2;
+		  float y = cameraGUI.viewportHeight / 2;
+		  if (worldController.isGameOver()) {
+			  BitmapFont fontGameOver = Assets.instance.fonts.defaultBig;
+			  fontGameOver.setColor(1, 0.75f, 0.25f, 1);
+			  fontGameOver.draw(batch, "GAME OVER", x, y, 0, Align.center, false);
+			  fontGameOver.setColor(1, 1, 1, 1);
+		  }
+	}
+	
+	/**
+	 * Displays a feather by the gold coin if the player has the feather powerup
+	 * @param batch
+	 */
+	private void renderGuiLavaPowerup (SpriteBatch batch) {
+		float x = -15;
+		float y = 30;
+		float timeLeftLavaPowerup = worldController.level.waterPlayer.timeLeftLavaPowerup;
+		if (timeLeftLavaPowerup > 0) {
+		    // Start icon fade in/out if the left power-up time
+		    // is less than 4 seconds. The fade interval is set
+		    // to 5 changes per second.
+		    if (timeLeftLavaPowerup < 4) {
+		    	if (((int)(timeLeftLavaPowerup * 5) % 2) != 0) {
+		    		batch.setColor(1, 1, 1, 0.5f);
+		    	}
+		    }
+		    batch.draw(Assets.instance.blocks.lavaBlock, x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0);
+		    batch.setColor(1, 1, 1, 1);
+		    Assets.instance.fonts.defaultSmall.draw(batch, "" + (int)timeLeftLavaPowerup, x + 60, y + 57);
+		}
+	}
+	
 	
 	/**
 	 * Destroy objects

@@ -17,7 +17,7 @@ public class Assets implements Disposable, AssetErrorListener {
     public static final Assets instance = new Assets(); //Assets instance (singleton)
     private AssetManager assetManager; //asset manager instance
     
-    public AssetWaterPlayer waterPlayer; //Bunny asset
+    public AssetWaterPlayer waterPlayer; //water player asset
     public AssetRock rock; //Rock asset
     public AssetGoldCoin goldCoin; //Coin asset
     public AssetBlocks blocks; //Feather asset
@@ -97,7 +97,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	    public final AtlasRegion waterPlayer; //player
 	    
 	    /**
-	     * Constructor for the bunny head
+	     * Constructor for the water player
 	     * @param atlas
 	     */
 	    public AssetWaterPlayer (TextureAtlas atlas) {
@@ -146,7 +146,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	 */
 	public class AssetBlocks {
 	    public final AtlasRegion ice; //ice
-	    public final AtlasRegion lava_block; //lavablock
+	    public final AtlasRegion lavaBlock; //lavablock
 	    
 	    /**
 	     * Constructor for the feather asset
@@ -154,7 +154,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	     */
 	    public AssetBlocks (TextureAtlas atlas) {
 	        ice = atlas.findRegion("ice_block");
-	        lava_block = atlas.findRegion("lava_block");
+	        lavaBlock = atlas.findRegion("lava_block");
 	    }
 	}
 	

@@ -1,5 +1,6 @@
 package com.rebok.gdx.game.desktop;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -32,7 +33,7 @@ public class DesktopLauncher {
 	     }
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-	    config.title = "CanyonBunny";
+	    config.title = "WaterSurvival";
 	    config.width = 800;
 	    config.height = 480;
 		new LwjglApplication(new RebokGdxGame(), config);
