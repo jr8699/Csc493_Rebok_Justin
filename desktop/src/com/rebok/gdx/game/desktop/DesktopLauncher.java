@@ -30,6 +30,7 @@ public class DesktopLauncher {
 	          settings.duplicatePadding = false;
 	          settings.debug = drawDebugOutline;
 	          TexturePacker.process(settings, "assets-raw/images", "../rebok-gdx-game-core/assets", "rebok-mygame.atlas");
+	          TexturePacker.process(settings, "assets-raw/images-ui", "../rebok-gdx-game-core/assets", "game-ui.atlas");
 	     }
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

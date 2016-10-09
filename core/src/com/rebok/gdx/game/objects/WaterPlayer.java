@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.rebok.gdx.game.Assets;
 import com.rebok.gdx.game.util.Constants;
+import com.rebok.gdx.game.util.GamePreferences;
+import com.rebok.gdx.game.util.CharacterSkin;
 
 public class WaterPlayer extends AbstractGameObject {
 	public static final String TAG = WaterPlayer.class.getName(); //libgdx tag
@@ -179,6 +181,9 @@ public class WaterPlayer extends AbstractGameObject {
 	public void render (SpriteBatch batch) {
 		TextureRegion reg = null;
 		// Set special color when game object has a feather power-up
+		  // Apply Skin Color
+		  batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor());
+		
 		if (hasLavaPowerup) {
 			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);
 		}

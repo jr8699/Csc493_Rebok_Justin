@@ -3,13 +3,15 @@ package com.rebok.gdx.game;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.AssetManager;
 import com.rebok.gdx.game.Assets;
+import com.rebok.gdx.game.screens.MenuScreen;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class RebokGdxGame extends ApplicationAdapter {
+public class RebokGdxGame extends Game {
     private static final String TAG = RebokGdxGame.class.getName(); //libGDX tag
     
     private WorldController worldController; //World controller
@@ -21,15 +23,12 @@ public class RebokGdxGame extends ApplicationAdapter {
      * Initialize everything needed to run the game
      */
     @Override public void create() {
-        // Set Libgdx log level to DEBUG
+        // Set Libgdx log level 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         // Load assets
         Assets.instance.init(new AssetManager());
-        // Initialize controller and renderer
-        worldController = new WorldController();
-        worldRenderer = new WorldRenderer(worldController);
-        // Game world is active on start
-        paused = false;
+        // Start game at menu screen
+        setScreen(new MenuScreen(this));
     }
     
     /**

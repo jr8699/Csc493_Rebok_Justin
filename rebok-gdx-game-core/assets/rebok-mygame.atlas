@@ -11,7 +11,7 @@ arial-15
   orig: 256, 128
   offset: 0, 0
   index: -1
-background
+background_game
   rotate: false
   xy: 2, 766
   size: 1000, 250

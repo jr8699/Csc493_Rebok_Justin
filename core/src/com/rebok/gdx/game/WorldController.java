@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -17,6 +18,7 @@ import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
 import com.rebok.gdx.game.objects.WaterPlayer.JUMP_STATE;
+import com.rebok.gdx.game.screens.MenuScreen;
 import com.rebok.gdx.game.util.CameraHelper;
 import com.rebok.gdx.game.util.Constants;
 
@@ -37,8 +39,11 @@ public class WorldController extends InputAdapter{
 	private Rectangle r2 = new Rectangle();
 	private float timeLeftGameOverDelay; //level time left
 	
+	private Game game;
+	
 	//Constructor
-	public WorldController() {
+	public WorldController(Game game) {
+		this.game = game;
 		init();
 	}
 	
@@ -76,6 +81,14 @@ public class WorldController extends InputAdapter{
 	 */
 	public boolean isPlayerInWater () {
 		return level.waterPlayer.position.y < -5;
+	}
+	
+	/**
+	 * Goes back to the menu screen
+	 */
+	private void backToMenu () {
+		// switch to menu screen
+		game.setScreen(new MenuScreen(game));
 	}
 	
 	/**
@@ -161,7 +174,7 @@ public class WorldController extends InputAdapter{
 		handleDebugInput(deltaTime);
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
-			if (timeLeftGameOverDelay < 0) init();
+			if (timeLeftGameOverDelay < 0) backToMenu();
 		} else {
 			handleInputGame(deltaTime);
 		}
@@ -239,6 +252,10 @@ public class WorldController extends InputAdapter{
 	    if (keycode == Keys.R) {
 	    	init();
 	    	Gdx.app.debug(TAG, "Game world resetted");
+	    }
+	    // Back to Menu
+	    else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+	      backToMenu();
 	    }
 	    return false;
 	}
