@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -17,6 +18,7 @@ import com.rebok.gdx.game.objects.BunnyHead.JUMP_STATE;
 import com.rebok.gdx.game.objects.Feather;
 import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.Rock;
+import com.rebok.gdx.game.screens.MenuScreen;
 import com.rebok.gdx.game.util.CameraHelper;
 import com.rebok.gdx.game.util.Constants;
 
@@ -35,9 +37,11 @@ public class WorldController extends InputAdapter{
 	private Rectangle r1 = new Rectangle();
 	private Rectangle r2 = new Rectangle();
 	private float timeLeftGameOverDelay; //level time left
+	private Game game;
 	
 	//Constructor
-	public WorldController() {
+	public WorldController (Game game) {
+		this.game = game;
 		init();
 	}
 	
@@ -59,7 +63,12 @@ public class WorldController extends InputAdapter{
 	    timeLeftGameOverDelay = 0;
 	    initLevel();
 	}
-		
+	
+	private void backToMenu () {
+		// switch to menu screen
+		game.setScreen(new MenuScreen(game));
+	}
+	
 	/**
 	 * Get the game status depending on the player's lives
 	 * @return
@@ -158,7 +167,7 @@ public class WorldController extends InputAdapter{
 		handleDebugInput(deltaTime);
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
-			if (timeLeftGameOverDelay < 0) init();
+			if (timeLeftGameOverDelay < 0) backToMenu();
 		} else {
 			handleInputGame(deltaTime);
 		}
@@ -178,6 +187,7 @@ public class WorldController extends InputAdapter{
 	 * Keyboard input
 	 * Space - next sprite
 	 * Enter - target follow
+	 * ESC - menu
 	 */
 	@Override
 	public boolean keyUp (int keycode) {
@@ -190,6 +200,10 @@ public class WorldController extends InputAdapter{
 	    else if (keycode == Keys.ENTER) {
 	    	cameraHelper.setTarget(cameraHelper.hasTarget() ? null: level.bunnyHead);
 	    	Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
+	    }
+	    // Back to Menu
+	    else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+	    	backToMenu();
 	    }
 	    return false;
 	}

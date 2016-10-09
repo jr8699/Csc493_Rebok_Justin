@@ -29,6 +29,7 @@ public class DesktopLauncher {
 	          settings.duplicatePadding = false;
 	          settings.debug = drawDebugOutline;
 	          TexturePacker.process(settings, "assets-raw/images", "../rebok-gdx-game-core/assets", "canyonbunny.atlas");
+	          TexturePacker.process(settings, "assets-raw/ui-images", "../rebok-gdx-game-core/assets", "canyonbunny-ui.atlas");
 	     }
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

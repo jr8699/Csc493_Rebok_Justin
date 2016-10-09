@@ -33,4 +33,16 @@ public class Constants {
     
     // Delay after game over
     public static final float TIME_DELAY_GAME_OVER = 3;
+    
+    //desktop ui stuff
+    public static final String TEXTURE_ATLAS_UI = "../rebok-gdx-game-core/assets/canyonbunny-ui.atlas";
+    
+    public static final String TEXTURE_ATLAS_LIBGDX_UI = "../rebok-gdx-game-core/assets/uiskin.atlas";
+    
+    //android stuff
+    public static final String SKIN_LIBGDX_UI = "assets/uiskin.json";
+    
+    public static final String SKIN_CANYONBUNNY_UI = "assets/game-ui.json";
+
+	public static final String PREFERENCES = null;
 }

@@ -1,9 +1,11 @@
 package com.rebok.gdx.game.objects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.rebok.gdx.game.util.CharacterSkin;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.rebok.gdx.game.Assets;
 import com.rebok.gdx.game.util.Constants;
+import com.rebok.gdx.game.util.GamePreferences;
 
 public class BunnyHead extends AbstractGameObject {
 	public static final String TAG = BunnyHead.class.getName(); //libgdx tag
@@ -160,6 +162,10 @@ public class BunnyHead extends AbstractGameObject {
 	@Override
 	public void render (SpriteBatch batch) {
 		TextureRegion reg = null;
+		
+		// Apply Skin Color
+		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor());
+		  
 		// Set special color when game object has a feather power-up
 		if (hasFeatherPowerup) {
 			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);
