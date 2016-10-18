@@ -1,5 +1,7 @@
 package com.rebok.gdx.game.objects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.rebok.gdx.game.Assets;
@@ -12,6 +14,7 @@ public class WaterPlayer extends AbstractGameObject {
 	private final float JUMP_TIME_MAX = 0.6f; //max time of a jump
 	private final float JUMP_TIME_MIN = 0.1f; //min time of a jump
 	private final float JUMP_TIME_OFFSET_FLYING = JUMP_TIME_MAX - 0.018f;
+	public ParticleEffect dustParticles = new ParticleEffect(); //dust
 	
 	public enum VIEW_DIRECTION { LEFT, RIGHT }
 	
@@ -51,6 +54,9 @@ public class WaterPlayer extends AbstractGameObject {
 		// Power-ups
 		hasLavaPowerup = false;
 		timeLeftLavaPowerup = 0;
+		// Particles
+		dustParticles.load(Gdx.files.internal("../rebok-gdx-game-core/assets/particles/dust.pfx"),  
+		Gdx.files.internal("../rebok-gdx-game-core/assets/particles"));
 		
 	}
 	
@@ -139,6 +145,7 @@ public class WaterPlayer extends AbstractGameObject {
 				setLavaPowerup(false);
 			}
 		}
+		dustParticles.update(deltaTime);
 	}
 	
 	/**
@@ -149,6 +156,11 @@ public class WaterPlayer extends AbstractGameObject {
 		switch (jumpState) {
 	    	case GROUNDED:
 	    		jumpState = JUMP_STATE.FALLING;
+	    		if (velocity.x != 0) {
+	    			dustParticles.setPosition(position.x + dimension.x / 2,  
+	    			position.y);
+	    			dustParticles.start();
+	    		}
 	    		break;
 	    	case JUMP_RISING:
 	    		// Keep track of jump time
@@ -170,8 +182,10 @@ public class WaterPlayer extends AbstractGameObject {
 	    			velocity.y = terminalVelocity.y;
 	    		}
 		}
-		if (jumpState != JUMP_STATE.GROUNDED)
+		if (jumpState != JUMP_STATE.GROUNDED){
 			super.updateMotionY(deltaTime);
+			dustParticles.allowCompletion();
+		}
 	}
 	
 	/**
@@ -181,8 +195,10 @@ public class WaterPlayer extends AbstractGameObject {
 	public void render (SpriteBatch batch) {
 		TextureRegion reg = null;
 		// Set special color when game object has a feather power-up
-		  // Apply Skin Color
-		  batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor());
+		// Draw Particles
+		dustParticles.draw(batch);
+		// Apply Skin Color
+		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor());
 		
 		if (hasLavaPowerup) {
 			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);

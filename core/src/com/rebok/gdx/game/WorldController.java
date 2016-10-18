@@ -33,6 +33,8 @@ public class WorldController extends InputAdapter{
 	public Level level; //Our current level
 	public int lives; //Current lives left
 	public int score; //Current score
+	public float livesVisual; //visual lives
+	public float scoreVisual; //visual score
 	
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle();
@@ -50,10 +52,11 @@ public class WorldController extends InputAdapter{
 	
 	//Constructor
 	private void initLevel(){
-	  score = 0;
-	  level = new Level(Constants.LEVEL_01);
-	  cameraHelper.setTarget(level.waterPlayer);
-	}
+		score = 0;
+		scoreVisual = score;
+		level = new Level(Constants.LEVEL_01);
+		cameraHelper.setTarget(level.waterPlayer);
+	}  
 	
 	/**
 	 * Constructor code
@@ -61,9 +64,10 @@ public class WorldController extends InputAdapter{
 	private void init() {
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
-	    lives = Constants.LIVES_START;
-	    timeLeftGameOverDelay = 0;
-	    initLevel();
+		lives = Constants.LIVES_START;
+		livesVisual = lives;
+		timeLeftGameOverDelay = 0;
+		initLevel();
 	}
 	
 	/**
@@ -172,21 +176,27 @@ public class WorldController extends InputAdapter{
 	public void update(float deltaTime) {
 		handleDebugInput(deltaTime);
 		if (isGameOver()) {
-			timeLeftGameOverDelay -= deltaTime;
-			if (timeLeftGameOverDelay < 0) backToMenu();
+		timeLeftGameOverDelay -= deltaTime;
+		if (timeLeftGameOverDelay< 0) 
+			backToMenu();
 		} else {
 			handleInputGame(deltaTime);
 		}
 		level.update(deltaTime);
 		testCollisions();
 		cameraHelper.update(deltaTime);
-		if (!isGameOver() && isPlayerInWater()) {
+		if (!isGameOver() &&isPlayerInWater()) {
 			lives--;
-		    if (isGameOver())
-		    	timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
-		    else
-		    	initLevel();
+		if (isGameOver())
+			timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
+		else
+			initLevel();
 		}
+		level.mountains.updateScrollPosition(cameraHelper.getPosition());
+		if (livesVisual> lives)
+			livesVisual = Math.max(lives, livesVisual - 1 * deltaTime);
+		if (scoreVisual< score)
+			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
 	}
 	
 	/**
