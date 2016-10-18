@@ -32,12 +32,14 @@ public class WorldController extends InputAdapter{
 	public CameraHelper cameraHelper; //CameraHelper instance
 	public Level level; //Our current level
 	public int lives; //Current lives left
+	public float livesVisual; //lives visualized
 	public int score; //Current score
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle();
 	private Rectangle r2 = new Rectangle();
 	private float timeLeftGameOverDelay; //level time left
 	private Game game;
+	public float scoreVisual; //score visual
 	
 	//Constructor
 	public WorldController (Game game) {
@@ -48,10 +50,11 @@ public class WorldController extends InputAdapter{
 	
 	//Constructor
 	private void initLevel () {
-	  score = 0;
-	  level = new Level(Constants.LEVEL_01);
-	  cameraHelper.setTarget(level.bunnyHead);
-	}
+		score = 0;
+		scoreVisual = score;
+		level = new Level(Constants.LEVEL_01);
+		cameraHelper.setTarget(level.bunnyHead);
+	}  
 	
 	/**
 	 * Constructor code
@@ -167,20 +170,26 @@ public class WorldController extends InputAdapter{
 		handleDebugInput(deltaTime);
 		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
-			if (timeLeftGameOverDelay < 0) backToMenu();
+		if (timeLeftGameOverDelay< 0)
+			backToMenu();
 		} else {
 			handleInputGame(deltaTime);
 		}
 		level.update(deltaTime);
 		testCollisions();
 		cameraHelper.update(deltaTime);
-		if (!isGameOver() && isPlayerInWater()) {
+		if (!isGameOver() &&isPlayerInWater()) {
 			lives--;
-		    if (isGameOver())
-		    	timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
-		    else
-		    	initLevel();
+		if (isGameOver())
+			timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
+		else
+			initLevel();
 		}
+		level.mountains.updateScrollPosition(cameraHelper.getPosition());
+		if (livesVisual> lives)
+			livesVisual = Math.max(lives, livesVisual - 1 * deltaTime);
+		if (scoreVisual< score)
+			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
 	}
 	
 	/**

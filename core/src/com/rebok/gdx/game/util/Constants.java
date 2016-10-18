@@ -44,5 +44,5 @@ public class Constants {
     
     public static final String SKIN_CANYONBUNNY_UI = "../rebok-gdx-game-core/assets/game-ui.json";
 
-	public static final String PREFERENCES = null;
+	public static final String PREFERENCES = "canyonbunny.pref";
 }
