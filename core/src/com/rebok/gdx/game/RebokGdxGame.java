@@ -43,8 +43,8 @@ public class RebokGdxGame extends Game {
         	worldController.update(Gdx.graphics.getDeltaTime());
         }
         
-        // Sets the clear screen color to: Cornflower Blue
-        Gdx.gl.glClearColor(0x64/255.0f, 0x95/255.0f, 0xed/255.0f, 0xff/255.0f);
+        // Sets the clear screen color to: red
+        Gdx.gl.glClearColor(123/255f, 43/255f, 50/255f, 1); //Set the background color to a red
         // Clears the screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // Render game world to screen

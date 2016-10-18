@@ -60,7 +60,6 @@ public class WorldController extends InputAdapter{
 	 */
 	private void init() {
 		Gdx.input.setInputProcessor(this);
-		Gdx.gl.glClearColor(123/255f, 43/255f, 50/255f, 1); //Set the background color to a red
 		cameraHelper = new CameraHelper();
 	    lives = Constants.LIVES_START;
 	    timeLeftGameOverDelay = 0;
