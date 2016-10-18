@@ -40,9 +40,9 @@ public class Constants {
     public static final String TEXTURE_ATLAS_LIBGDX_UI = "../rebok-gdx-game-core/assets/uiskin.atlas";
     
     //android stuff
-    public static final String SKIN_LIBGDX_UI = "assets/uiskin.json";
+    public static final String SKIN_LIBGDX_UI = "../rebok-gdx-game-core/assets/uiskin.json";
     
-    public static final String SKIN_CANYONBUNNY_UI = "assets/game-ui.json";
+    public static final String SKIN_CANYONBUNNY_UI = "../rebok-gdx-game-core/assets/game-ui.json";
 
 	public static final String PREFERENCES = null;
 }
