@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
@@ -22,7 +24,10 @@ public class Assets implements Disposable, AssetErrorListener {
     public AssetGoldCoin goldCoin; //Coin asset
     public AssetFeather feather; //Feather asset
     public AssetLevelDecoration levelDecoration; //Level decorations asset
-    public AssetFonts fonts;
+    public AssetFonts fonts; // our fonts
+    
+    public AssetSounds sounds; //our event sounds
+    public AssetMusic music; //our music
     
     
     // singleton: prevent instantiation from other classes
@@ -38,6 +43,15 @@ public class Assets implements Disposable, AssetErrorListener {
         assetManager.setErrorListener(this);
 	    // load texture atlas
 	    assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS, TextureAtlas.class);
+	    // load sounds
+	    assetManager.load("../rebok-gdx-game-core/assets/sounds/jump.wav", Sound.class);
+	    assetManager.load("../rebok-gdx-game-core/assets/sounds/jump_with_feather.wav", Sound.class);
+	    assetManager.load("../rebok-gdx-game-core/assets/sounds/pickup_coin.wav", Sound.class);
+	    assetManager.load("../rebok-gdx-game-core/assets/sounds/pickup_feather.wav", Sound.class);
+	    assetManager.load("../rebok-gdx-game-core/assets/sounds/live_lost.wav", Sound.class);
+	    // load music
+	    assetManager.load("../rebok-gdx-game-core/assets/music/keith303_-_brand_new_highscore.mp3", Music.class);
+	    
 	    // start loading assets and wait until finished
 	    assetManager.finishLoading();
 	    Gdx.app.debug(TAG, "# of assets loaded: " + assetManager.getAssetNames().size);
@@ -58,6 +72,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	    goldCoin = new AssetGoldCoin(atlas);
 	    feather = new AssetFeather(atlas);
 	    levelDecoration = new AssetLevelDecoration(atlas);
+	    sounds = new AssetSounds(assetManager);
+	    music = new AssetMusic(assetManager);
 	}
     
     /**
@@ -188,6 +204,11 @@ public class Assets implements Disposable, AssetErrorListener {
 	    }
 	}
 	
+	/**
+	 * Fonts of text for our game
+	 * @author Justin
+	 *
+	 */
 	public class AssetFonts {
 		  public final BitmapFont defaultSmall;
 		  public final BitmapFont defaultNormal;
@@ -211,4 +232,47 @@ public class Assets implements Disposable, AssetErrorListener {
 		          TextureFilter.Linear, TextureFilter.Linear);
 		    }
 	}
+	
+	/**
+	 * Asset controlling sounds for jumping, pikcing up coins, etc.
+	 * @author Justin
+	 *
+	 */
+	public class AssetSounds {
+		public final Sound jump; //sounds of all the actions
+		public final Sound jumpWithFeather;
+		public final Sound pickupCoin;
+		public final Sound pickupFeather;
+		public final Sound liveLost;
+		
+		/**
+		 * Load all the sounds
+		 * @param am
+		 */
+		public AssetSounds (AssetManager am) {
+			jump = am.get("../rebok-gdx-game-core/assets/sounds/jump.wav", Sound.class);
+			jumpWithFeather = am.get("../rebok-gdx-game-core/assets/sounds/jump_with_feather.wav", Sound.class);
+			pickupCoin = am.get("../rebok-gdx-game-core/assets/sounds/pickup_coin.wav", Sound.class);
+			pickupFeather = am.get("../rebok-gdx-game-core/assets/sounds/pickup_feather.wav", Sound.class);
+			liveLost = am.get("../rebok-gdx-game-core/assets/sounds/live_lost.wav", Sound.class);
+		}
+	
+	}
+	
+	/**
+	 * Asset controlling the music of the game
+	 * @author Justin
+	 *
+	 */
+	public class AssetMusic {
+		public final Music song01; //1st song of our game
+		
+		/**
+		 * Load our song
+		 * @param am
+		 */
+		public AssetMusic (AssetManager am) {
+			song01 = am.get("../rebok-gdx-game-core/assets/music/keith303_-_brand_new_highscore.mp3", Music.class);
+		}
+}
 }

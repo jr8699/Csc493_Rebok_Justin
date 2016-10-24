@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.rebok.gdx.game.Assets;
+import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.CharacterSkin;
 import com.rebok.gdx.game.util.Constants;
 import com.rebok.gdx.game.util.GamePreferences;
@@ -131,6 +132,7 @@ public class MenuScreen extends AbstractGameScreen {
 	private void onSaveClicked() {
 		saveSettings();
 		onCancelClicked();
+		AudioManager.instance.onSettingsUpdated();
 	}
 	
 	/**
@@ -140,6 +142,7 @@ public class MenuScreen extends AbstractGameScreen {
 		btnMenuPlay.setVisible(true);
 		btnMenuOptions.setVisible(true);
 		winOptions.setVisible(false);
+		AudioManager.instance.onSettingsUpdated();
 	}
 	
 	/**
