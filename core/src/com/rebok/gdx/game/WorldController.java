@@ -19,6 +19,7 @@ import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
 import com.rebok.gdx.game.objects.WaterPlayer.JUMP_STATE;
 import com.rebok.gdx.game.screens.MenuScreen;
+import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.CameraHelper;
 import com.rebok.gdx.game.util.Constants;
 
@@ -187,6 +188,7 @@ public class WorldController extends InputAdapter{
 		cameraHelper.update(deltaTime);
 		if (!isGameOver() &&isPlayerInWater()) {
 			lives--;
+			AudioManager.instance.play(Assets.instance.sounds.liveLost);
 		if (isGameOver())
 			timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
 		else
@@ -235,6 +237,7 @@ public class WorldController extends InputAdapter{
 	 */
 	private void onCollisionWaterPlayerWithGoldCoin(GoldCoin goldcoin) {
 		goldcoin.collected = true;
+		AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
 		score += goldcoin.getScore();
 		Gdx.app.log(TAG, "Gold coin collected");
 	}
@@ -245,6 +248,7 @@ public class WorldController extends InputAdapter{
 	 */
 	private void onCollisionWaterPlayerWithFeather(LavaBlock lavaBlock) {
 		lavaBlock.collected = true;
+		AudioManager.instance.play(Assets.instance.sounds.pickupLava);
 		score += lavaBlock.getScore();
 		level.waterPlayer.setLavaPowerup(true);
 		Gdx.app.log(TAG, "Feather collected");

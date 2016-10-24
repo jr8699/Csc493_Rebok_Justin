@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.rebok.gdx.game.Assets;
+import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.Constants;
 import com.rebok.gdx.game.util.GamePreferences;
 import com.rebok.gdx.game.util.CharacterSkin;
@@ -69,6 +71,7 @@ public class WaterPlayer extends AbstractGameObject {
 		
 		    case GROUNDED: // Character is standing on a platform
 		    	if (jumpKeyPressed) {
+		    		AudioManager.instance.play(Assets.instance.sounds.jump);
 		    		// Start counting jump time from the beginning
 		    		timeJumping = 0;
 		    		jumpState = JUMP_STATE.JUMP_RISING;
@@ -84,6 +87,8 @@ public class WaterPlayer extends AbstractGameObject {
 		    	
 		    case JUMP_FALLING: // Falling down after jump
 		        if (jumpKeyPressed && hasLavaPowerup) {
+		            AudioManager.instance.play(Assets.instance.sounds.jumpWithLava, 1,  
+		            MathUtils.random(1.0f, 1.1f));
 		            timeJumping = JUMP_TIME_OFFSET_FLYING;
 		            jumpState = JUMP_STATE.JUMP_RISING;
 		        }
