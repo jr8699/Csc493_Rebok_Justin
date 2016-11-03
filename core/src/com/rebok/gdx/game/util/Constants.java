@@ -45,4 +45,24 @@ public class Constants {
     public static final String SKIN_CANYONBUNNY_UI = "../rebok-gdx-game-core/assets/game-ui.json";
 
 	public static final String PREFERENCES = "canyonbunny.pref";
+	
+	// Number of carrots to spawn
+	public static final int CARROTS_SPAWN_MAX = 100;
+	
+	// Spawn radius for carrots
+	public static final float CARROTS_SPAWN_RADIUS = 3.5f;
+	
+	// Delay after game finished
+	public static final float TIME_DELAY_GAME_FINISHED = 6;
+	
+	// Shader
+	public static final String shaderMonochromeVertex =  
+	"assets-raw/shaders/monochrome.vs";
+	public static final String shaderMonochromeFragment =  
+	"assets-raw/shaders/monochrome.fs";
+	
+	// Angle of rotation for dead zone (no movement)
+	public static final float ACCEL_ANGLE_DEAD_ZONE = 5.0f;
+	// Max angle of rotation needed to gain max movement velocity
+	public static final float ACCEL_MAX_ANGLE_MAX_MOVEMENT = 20.0f;
 }

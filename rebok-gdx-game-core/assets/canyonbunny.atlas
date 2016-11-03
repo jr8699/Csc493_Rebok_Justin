@@ -6,91 +6,105 @@ filter: Nearest,Nearest
 repeat: none
 arial-15
   rotate: false
-  xy: 155, 314
+  xy: 357, 392
   size: 256, 128
   orig: 256, 128
   offset: 0, 0
   index: -1
 bunny_head
   rotate: false
-  xy: 2, 2
+  xy: 873, 438
   size: 122, 82
   orig: 122, 82
   offset: 0, 0
   index: -1
+carrot
+  rotate: false
+  xy: 36, 110
+  size: 20, 52
+  orig: 20, 52
+  offset: 0, 0
+  index: -1
 cloud01
   rotate: false
-  xy: 413, 274
+  xy: 357, 312
   size: 178, 78
   orig: 178, 78
   offset: 0, 0
   index: -1
 cloud02
   rotate: false
-  xy: 413, 354
+  xy: 155, 235
   size: 198, 88
   orig: 198, 88
   offset: 0, 0
   index: -1
 cloud03
   rotate: false
-  xy: 155, 97
+  xy: 155, 148
   size: 182, 85
   orig: 182, 85
   offset: 0, 0
   index: -1
 default
   rotate: false
-  xy: 155, 184
+  xy: 615, 392
   size: 256, 128
   orig: 256, 128
   offset: 0, 0
   index: -1
+goal
+  rotate: false
+  xy: 155, 325
+  size: 200, 195
+  orig: 200, 195
+  offset: 0, 0
+  index: -1
 item_feather
   rotate: false
-  xy: 413, 232
+  xy: 873, 396
   size: 46, 40
   orig: 46, 40
   offset: 0, 0
   index: -1
 item_gold_coin
   rotate: false
-  xy: 339, 126
+  xy: 537, 334
   size: 56, 56
   orig: 56, 56
   offset: 0, 0
   index: -1
 mountain_left
   rotate: false
-  xy: 2, 671
+  xy: 2, 749
   size: 1000, 225
   orig: 1000, 225
   offset: 0, 0
   index: -1
 mountain_right
   rotate: false
-  xy: 2, 444
+  xy: 2, 522
   size: 1000, 225
   orig: 1000, 225
   offset: 0, 0
   index: -1
 rock_edge
   rotate: false
-  xy: 90, 86
+  xy: 90, 164
   size: 63, 356
   orig: 63, 356
   offset: 0, 0
   index: -1
 rock_middle
   rotate: false
-  xy: 2, 86
+  xy: 2, 164
   size: 86, 356
   orig: 86, 356
   offset: 0, 0
   index: -1
 water_overlay
   rotate: false
-  xy: 613, 282
+  xy: 2, 2
   size: 32, 160
   orig: 32, 160
   offset: 0, 0

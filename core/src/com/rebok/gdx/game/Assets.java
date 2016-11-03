@@ -30,6 +30,7 @@ public class Assets implements Disposable, AssetErrorListener {
     public AssetMusic music; //our music
     
     
+    
     // singleton: prevent instantiation from other classes
     private Assets () {}
     
@@ -189,6 +190,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	    public final AtlasRegion mountainLeft; //Left mountain
 	    public final AtlasRegion mountainRight; //Right mountain
 	    public final AtlasRegion waterOverlay; //water
+	    public final AtlasRegion carrot; //a carrot
+	    public final AtlasRegion goal; //our goal
 	    
 	    /**
 	     * Constructor for the level decorations
@@ -201,6 +204,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	        mountainLeft = atlas.findRegion("mountain_left");
 	        mountainRight = atlas.findRegion("mountain_right");
 	        waterOverlay = atlas.findRegion("water_overlay");
+	        carrot = atlas.findRegion("carrot");
+	        goal = atlas.findRegion("goal");
 	    }
 	}
 	

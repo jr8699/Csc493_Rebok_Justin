@@ -62,6 +62,8 @@ public class MenuScreen extends AbstractGameScreen {
 	private float debugRebuildStage;
 	private Skin skinLibgdx;
 	
+	private CheckBox chkUseMonoChromeShader; //for shading
+	
 	//Constructor
 	public MenuScreen (Game game) {
 	    super(game);
@@ -101,6 +103,7 @@ public class MenuScreen extends AbstractGameScreen {
 		selCharSkin.setSelectedIndex(prefs.charSkin);
 		onCharSkinSelected(prefs.charSkin);
 		chkShowFpsCounter.setChecked(prefs.showFpsCounter);
+		chkUseMonoChromeShader.setChecked(prefs.useMonochromeShader);
 	}
 	
 	/**
@@ -114,6 +117,7 @@ public class MenuScreen extends AbstractGameScreen {
 		  prefs.volMusic = sldMusic.getValue();
 		  prefs.charSkin = selCharSkin.getSelectedIndex();
 		  prefs.showFpsCounter = chkShowFpsCounter.isChecked();
+		  prefs.useMonochromeShader = chkUseMonoChromeShader.isChecked();
 		  prefs.save();
 	}
 	
@@ -184,6 +188,11 @@ public class MenuScreen extends AbstractGameScreen {
 		tbl.columnDefaults(0).padRight(10);
 		tbl.columnDefaults(1).padRight(10);
 		// + Checkbox, "Show FPS Counter" label
+		// + Checkbox, "Use Monochrome Shader" label
+		chkUseMonoChromeShader = new CheckBox("", skinLibgdx);
+		tbl.add(new Label("Use Monochrome Shader", skinLibgdx));
+		tbl.add(chkUseMonoChromeShader);
+		tbl.row();
 		chkShowFpsCounter = new CheckBox("", skinLibgdx);
 		tbl.add(new Label("Show FPS Counter", skinLibgdx));
 		tbl.add(chkShowFpsCounter);
