@@ -133,10 +133,17 @@ public class WaterPlayer extends AbstractGameObject {
 	
 	/**
 	 * Update function, overridden to also change the view direction
+	 * @author Dr.Girard, Justin
 	 */
 	@Override
 	public void update (float deltaTime) {
-		super.update(deltaTime);
+		updateMotionX(deltaTime);
+		updateMotionY(deltaTime);
+		if (body != null)
+		{
+			body.setLinearVelocity(velocity);
+			position.set(body.getPosition());
+		}
 		if (velocity.x != 0) {
 			viewDirection = velocity.x < 0 ? VIEW_DIRECTION.LEFT : VIEW_DIRECTION.RIGHT;
 		}
@@ -150,8 +157,7 @@ public class WaterPlayer extends AbstractGameObject {
 				setLavaPowerup(false);
 			}
 		}
-		dustParticles.update(deltaTime);
-	}
+}
 	
 	/**
 	 * Overridden to include jump state in our y axis calculations

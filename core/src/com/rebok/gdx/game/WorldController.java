@@ -1,6 +1,7 @@
 package com.rebok.gdx.game;
 
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -8,11 +9,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.Rock;
@@ -42,6 +50,9 @@ public class WorldController extends InputAdapter{
 	private Rectangle r2 = new Rectangle();
 	private float timeLeftGameOverDelay; //level time left
 	
+	public Array<AbstractGameObject> objectsToRemove; //for box2d physics
+	public World myWorld;
+	
 	private Game game;
 	
 	//Constructor
@@ -57,18 +68,83 @@ public class WorldController extends InputAdapter{
 		scoreVisual = score;
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.waterPlayer);
+		initPhysics();
 	}  
 	
 	/**
 	 * Constructor code
 	 */
 	private void init() {
-		Gdx.input.setInputProcessor(this);
+		objectsToRemove = new Array<AbstractGameObject>();
 		cameraHelper = new CameraHelper();
 		lives = Constants.LIVES_START;
 		livesVisual = lives;
 		timeLeftGameOverDelay = 0;
+		Gdx.input.setInputProcessor(this);
 		initLevel();
+	}
+	
+	/**
+	 * Initialize the physics
+	 * @author Dr.Girard, Justin
+	 */
+	private void initPhysics()
+	{
+		if (myWorld != null)
+			myWorld.dispose();
+		myWorld = new World(new Vector2(0, -9.81f), true);
+		myWorld.setContactListener(new CollisionHandler(this));  // Not in the book
+		Vector2 origin = new Vector2();
+		for (Rock pieceOfLand : level.rocks)
+		{
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.position.set(pieceOfLand.position);
+			bodyDef.type = BodyType.KinematicBody;
+			Body body = myWorld.createBody(bodyDef);
+			//body.setType(BodyType.DynamicBody);
+			body.setUserData(pieceOfLand);
+			pieceOfLand.body = body;
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = pieceOfLand.bounds.width / 2.0f;
+			origin.y = pieceOfLand.bounds.height / 2.0f;
+			polygonShape.setAsBox(pieceOfLand.bounds.width / 2.0f, (pieceOfLand.bounds.height-0.04f) / 2.0f, origin, 0);
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = polygonShape;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
+
+		// For PLayer
+		WaterPlayer player = level.waterPlayer;
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.position.set(player.position);
+		bodyDef.fixedRotation = true;
+
+		Body body = myWorld.createBody(bodyDef);
+		body.setType(BodyType.DynamicBody);
+		body.setGravityScale(0.0f);
+		body.setUserData(player);
+		player.body = body;
+
+		PolygonShape polygonShape = new PolygonShape();
+		origin.x = (player.bounds.width) / 2.0f;
+		origin.y = (player.bounds.height) / 2.0f;
+		polygonShape.setAsBox((player.bounds.width) / 2.0f, (player.bounds.height) / 2.0f, origin, 0);
+
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = polygonShape;
+		// fixtureDef.friction = 0.5f;
+		body.createFixture(fixtureDef);
+		polygonShape.dispose();
+	}
+	
+	/**
+	 * Flag an object for removal, box2d
+	 * @param obj
+	 */
+	public void flagForRemoval(AbstractGameObject obj)
+	{
+		objectsToRemove.add(obj);
 	}
 	
 	/**
@@ -101,7 +177,6 @@ public class WorldController extends InputAdapter{
 	 */
 	private void handleDebugInput(float deltaTime) {
 		if (Gdx.app.getType() != ApplicationType.Desktop) return;
-
 		if (!cameraHelper.hasTarget(level.waterPlayer)) {
 			// Camera Controls (move)
 			float camMoveSpeed = 5 * deltaTime;
@@ -150,7 +225,7 @@ public class WorldController extends InputAdapter{
 					  level.waterPlayer.velocity.x = level.waterPlayer.terminalVelocity.x;
 				  }
 			  }
-			  // Bunny Jump
+			  // player Jump
 			  if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE)) {
 				  level.waterPlayer.setJumping(true);
 			  } else {

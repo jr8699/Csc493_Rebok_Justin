@@ -10,6 +10,7 @@ import com.rebok.gdx.game.util.Constants;
 import com.rebok.gdx.game.util.GamePreferences;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 /**
  * Renders our world
@@ -21,6 +22,10 @@ public class WorldRenderer implements Disposable{
 	private SpriteBatch batch; //Sprites
 	private WorldController worldController; //World controller instance
 	private OrthographicCamera cameraGUI; //Camera for the gui
+	
+	// For Box2D Debugging
+	private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
+	private Box2DDebugRenderer b2DebugRenderer;
 	  
 	public WorldRenderer(WorldController worldController) {
 		this.worldController = worldController;
@@ -39,6 +44,7 @@ public class WorldRenderer implements Disposable{
 	    cameraGUI.position.set(0, 0, 0);
 	    cameraGUI.setToOrtho(true); // flip y-axis
 	    cameraGUI.update();
+	    b2DebugRenderer = new Box2DDebugRenderer();
 	}
 	
 	/**
@@ -59,6 +65,11 @@ public class WorldRenderer implements Disposable{
 		  batch.begin();
 		  worldController.level.render(batch);
 		  batch.end();
+		  
+		  if (DEBUG_DRAW_BOX2D_WORLD)
+		  {
+			  b2DebugRenderer.render(worldController.myWorld, camera.combined);
+		  }
 	}
 	
 	
