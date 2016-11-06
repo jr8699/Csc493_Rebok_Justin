@@ -137,6 +137,7 @@ public class WaterPlayer extends AbstractGameObject {
 	 */
 	@Override
 	public void update (float deltaTime) {
+		super.update(deltaTime);
 		updateMotionX(deltaTime);
 		updateMotionY(deltaTime);
 		if (body != null)
@@ -180,18 +181,24 @@ public class WaterPlayer extends AbstractGameObject {
 	    		if (timeJumping <= JUMP_TIME_MAX) {
 	    			// Still jumping
 	    			velocity.y = terminalVelocity.y;
+	    		}else{
+	    			jumpState = JUMP_STATE.JUMP_FALLING;
+	    			
 	    		}
 	    		break;
 	    	case FALLING:
+	    		//velocity.y = -terminalVelocity.y;
 	    		break;
 	    	case JUMP_FALLING:
 	    		// Add delta times to track jump time
-	    		timeJumping += deltaTime;
+	    		//timeJumping += deltaTime;
 	    		// Jump to minimal height if jump key was pressed too short
-	    		if (timeJumping > 0 && timeJumping <= JUMP_TIME_MIN) {
+	    		//if (timeJumping > 0 && timeJumping <= JUMP_TIME_MIN) {
 	    			// Still jumping
-	    			velocity.y = terminalVelocity.y;
-	    		}
+	    		//	velocity.y = terminalVelocity.y;
+	    		//}
+	    		velocity.y = -terminalVelocity.y;
+	    		break;
 		}
 		if (jumpState != JUMP_STATE.GROUNDED){
 			super.updateMotionY(deltaTime);

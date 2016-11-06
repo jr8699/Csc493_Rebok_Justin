@@ -259,6 +259,7 @@ public class WorldController extends InputAdapter{
 			handleInputGame(deltaTime);
 		}
 		level.update(deltaTime);
+		myWorld.step(deltaTime, 8, 3);
 		testCollisions();
 		cameraHelper.update(deltaTime);
 		if (!isGameOver() &&isPlayerInWater()) {
