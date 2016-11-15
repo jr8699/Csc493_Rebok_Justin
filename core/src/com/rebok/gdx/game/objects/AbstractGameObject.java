@@ -1,5 +1,6 @@
 package com.rebok.gdx.game.objects;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -26,6 +27,9 @@ public abstract class AbstractGameObject {
     
     public Body body; //for physics
     
+    public float stateTime; //for animation
+    public Animation animation;
+    
     //Constructor
     public AbstractGameObject () {
         position = new Vector2();
@@ -41,10 +45,20 @@ public abstract class AbstractGameObject {
     }
     
     /**
+     * Set the animation
+     * @param animation
+     */
+    public void setAnimation (Animation animation) {
+    	  this.animation = animation;
+    	  stateTime = 0;
+    }
+    
+    /**
      * Update method for objects, called by our world controller
      * @param deltaTime
      */
     public void update (float deltaTime) {
+    	stateTime += deltaTime;
     	if (body == null) {
     		updateMotionX(deltaTime);
     		updateMotionY(deltaTime);
