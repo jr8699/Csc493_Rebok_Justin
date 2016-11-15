@@ -4,6 +4,48 @@ size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+anim_goldCoin
+  rotate: false
+  xy: 774, 309
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 1
+item_goldCoin
+  rotate: false
+  xy: 774, 309
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+anim_goldCoin
+  rotate: false
+  xy: 215, 22
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 2
+anim_goldCoin
+  rotate: false
+  xy: 345, 88
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 3
+anim_goldCoin
+  rotate: false
+  xy: 679, 134
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 4
+anim_goldCoin
+  rotate: false
+  xy: 904, 505
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: 6
 arial-15
   rotate: false
   xy: 2, 122
@@ -39,13 +81,6 @@ default
   orig: 256, 128
   offset: 0, 0
   index: -1
-goldCoin5
-  rotate: false
-  xy: 774, 473
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
 ground
   rotate: false
   xy: 2, 252
@@ -55,7 +90,7 @@ ground
   index: -1
 ice_block
   rotate: false
-  xy: 774, 261
+  xy: 679, 168
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -90,14 +125,14 @@ mountain_black
   index: -1
 player
   rotate: false
-  xy: 774, 343
+  xy: 774, 473
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 water_end
   rotate: false
-  xy: 679, 120
+  xy: 774, 343
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
