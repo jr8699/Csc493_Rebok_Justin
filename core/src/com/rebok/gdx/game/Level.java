@@ -162,8 +162,9 @@ public class Level {
 	    for (Rock rock : rocks)
 	      rock.render(batch);
 	    // Draw Gold Coins
-	    for (GoldCoin goldCoin : goldcoins)
-	        goldCoin.render(batch);
+	    for (GoldCoin goldCoin : goldcoins){
+	        if(!goldCoin.toRemove) goldCoin.render(batch);
+	    }
 	    // Draw lavaBlocks
 	    for (LavaBlock lava : lavaBlocks)
 	    	lava.render(batch);

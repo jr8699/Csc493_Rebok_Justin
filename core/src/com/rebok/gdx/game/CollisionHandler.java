@@ -1,5 +1,6 @@
 package com.rebok.gdx.game;
 
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -171,9 +172,6 @@ public class CollisionHandler implements ContactListener {
     		WaterPlayer player = (WaterPlayer)playerFixture.getBody().getUserData();
     	    player.acceleration.y = 0;
     	    player.velocity.y = 0;
-    	    player.isJumping = false;
-    	    player.jumped = false;
-    	    player.jumpTimer = 0;
     	    playerFixture.getBody().setLinearVelocity(player.velocity);
     	}
     	else if (objFixture.getBody().getUserData() instanceof GoldCoin)
@@ -184,7 +182,8 @@ public class CollisionHandler implements ContactListener {
     		AudioManager.instance.play(Assets.instance.sounds.jump);
     		AudioManager.instance.play(Assets.instance.sounds.liveLost);
 
-    		GoldCoin block = (GoldCoin)objFixture.getBody().getUserData();
+    		Body block = objFixture.getBody();
+    		((GoldCoin)block.getUserData()).toRemove = true; //for removal
     		world.flagForRemoval(block);
     	}
     }

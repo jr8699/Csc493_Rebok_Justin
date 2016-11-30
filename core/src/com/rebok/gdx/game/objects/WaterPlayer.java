@@ -28,11 +28,7 @@ public class WaterPlayer extends AbstractGameObject {
 	public boolean hasLavaPowerup;
 	public float timeLeftLavaPowerup;
 	
-	public boolean jumped = false;
-	public boolean canJump = true;
-	public boolean isJumping = false;
-
-	public int jumpTimer = 0;
+	public boolean jump;
 	
 	public WaterPlayer () {
 	    init();
@@ -69,9 +65,10 @@ public class WaterPlayer extends AbstractGameObject {
 	 * @param jumpKeyPressed
 	 */
 	public void setJumping (boolean jumpKeyPressed) {
-		if(jumpKeyPressed && !isJumping){
-			jumped = true;
-			jumpTimer = 0;
+		if(jumpKeyPressed){
+			jump = true;
+		}else{
+			jump = false;
 		}
 	}
 	
@@ -141,14 +138,11 @@ public class WaterPlayer extends AbstractGameObject {
 	protected void updateMotionY (float deltaTime) {
 		if (body != null)
 		{
-			if(jumped && !isJumping){
-				
+			if(jump){
 				Vector2 forceUp = new Vector2();
 				Vector2 point = origin;
-				forceUp.y = 8;
+				forceUp.y = 2.0f;
 				body.applyLinearImpulse(forceUp, point, true);
-				jumped = false;
-				isJumping = true;
 			}
 			body.applyForceToCenter(velocity, true);
 			position.set(body.getPosition());

@@ -3,6 +3,7 @@ package com.rebok.gdx.game.objects;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Disposable;
 import com.rebok.gdx.game.Assets;
 
 /**
@@ -10,9 +11,10 @@ import com.rebok.gdx.game.Assets;
  * @author Justin
  *
  */
-public class GoldCoin extends AbstractGameObject {
+public class GoldCoin extends AbstractGameObject{
 	private TextureRegion regGoldCoin; //for the texture
 	public boolean collected; //whether the coin was collected or not
+	public boolean toRemove;
 	
 	public GoldCoin () {
 		init();
@@ -30,6 +32,7 @@ public class GoldCoin extends AbstractGameObject {
 	    // Set bounding box for collision detection
 	    bounds.set(0, 0, dimension.x, dimension.y);
 	    collected = false;
+	    toRemove = false;
 	}
 	
 	/**
@@ -58,4 +61,5 @@ public class GoldCoin extends AbstractGameObject {
 	public int getScore() {
 	    return 100;
 }
+
 }

@@ -49,7 +49,7 @@ public class WorldController extends InputAdapter{
 	private Rectangle r2 = new Rectangle();
 	private float timeLeftGameOverDelay; //level time left
 	
-	public Array<AbstractGameObject> objectsToRemove; //for box2d physics
+	public Array<Body> objectsToRemove; //for box2d physics
 	public World myWorld;
 	
 	private Game game;
@@ -74,7 +74,7 @@ public class WorldController extends InputAdapter{
 	 * Constructor code
 	 */
 	private void init() {
-		objectsToRemove = new Array<AbstractGameObject>();
+		objectsToRemove = new Array<Body>();
 		cameraHelper = new CameraHelper();
 		lives = Constants.LIVES_START;
 		livesVisual = lives;
@@ -113,6 +113,25 @@ public class WorldController extends InputAdapter{
 			polygonShape.dispose();
 		}
 
+		for (GoldCoin coin : level.goldcoins)
+		{
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.position.set(coin.position);
+			bodyDef.type = BodyType.StaticBody;
+			Body body = myWorld.createBody(bodyDef);
+			//body.setType(BodyType.DynamicBody);
+			body.setUserData(coin);
+			coin.body = body;
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = coin.bounds.width / 2.0f;
+			origin.y = coin.bounds.height / 2.0f;
+			polygonShape.setAsBox(coin.bounds.width / 2.0f, (coin.bounds.height-0.04f) / 2.0f, origin, 0);
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef.shape = polygonShape;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
+		
 		// For PLayer
 		WaterPlayer player = level.waterPlayer;
 		BodyDef bodyDef = new BodyDef();
@@ -141,7 +160,7 @@ public class WorldController extends InputAdapter{
 	 * Flag an object for removal, box2d
 	 * @param obj
 	 */
-	public void flagForRemoval(AbstractGameObject obj)
+	public void flagForRemoval(Body obj)
 	{
 		objectsToRemove.add(obj);
 	}
@@ -259,7 +278,16 @@ public class WorldController extends InputAdapter{
 		}
 		level.update(deltaTime);
 		myWorld.step(deltaTime, 8, 3);
-		//testCollisions();
+		for(Body b : objectsToRemove){ //remove old gold coins
+			if(b.getUserData() != null){
+			if(((GoldCoin)b.getUserData()).toRemove == true){
+				System.out.println("WHHYHYHYHHYHY");
+				myWorld.destroyBody(b);
+				b.setUserData(null);
+				b = null;
+			}
+			}
+		}
 		cameraHelper.update(deltaTime);
 		if (!isGameOver() &&isPlayerInWater()) {
 			lives--;
@@ -275,48 +303,6 @@ public class WorldController extends InputAdapter{
 		if (scoreVisual< score)
 			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
 	}
-	
-	///**
-	// * Testing a waterPlayer against a rock
-	// * @param rock
-	// */
-	//private void onCollisionWaterPlayerWithRock(Rock rock) {
-	//	WaterPlayer waterPlayer = level.waterPlayer;
-	//	float heightDifference = Math.abs(waterPlayer.position.y - (rock.position.y + rock.bounds.height));
-	//	if (heightDifference > 0.25f) {
-	//	    boolean hitRightEdge = waterPlayer.position.x > (rock.position.x + rock.bounds.width / 2.0f);
-	//	    if (hitRightEdge) {
-	//	    	waterPlayer.position.x = rock.position.x + rock.bounds.width;
-	//	    } else {
-	//	    	waterPlayer.position.x = rock.position.x - waterPlayer.bounds.width;
-	//	    }
-	//	    return;
-	//	}
-	//	//do
-	//}
-	
-	/**
-	 * Testing the waterPlayer against a coin
-	 * @param goldcoin
-	 */
-	private void onCollisionWaterPlayerWithGoldCoin(GoldCoin goldcoin) {
-		goldcoin.collected = true;
-		AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
-		score += goldcoin.getScore();
-		Gdx.app.log(TAG, "Gold coin collected");
-	}
-	
-	/**
-	 * Testing the lavablock against the water player
-	 * @param lavaBlock
-	 */
-	private void onCollisionWaterPlayerWithFeather(LavaBlock lavaBlock) {
-		lavaBlock.collected = true;
-		AudioManager.instance.play(Assets.instance.sounds.pickupLava);
-		score += lavaBlock.getScore();
-		level.waterPlayer.setLavaPowerup(true);
-		Gdx.app.log(TAG, "Feather collected");
-}
 	
 	/**
 	 * Keyboard input
@@ -335,35 +321,5 @@ public class WorldController extends InputAdapter{
 	      backToMenu();
 	    }
 	    return false;
-	}
-	  
-	  /**
-		 * For testing collision between objects
-		 */
-	private void testCollisions () {
-		r1.set(level.waterPlayer.position.x, level.waterPlayer.position.y, level.waterPlayer.bounds.width, level.waterPlayer.bounds.height);
-		// Test collision: Bunny Head <-> Rocks
-		for (Rock rock : level.rocks) {
-			//r2.set(rock.position.x, rock.position.y, rock.bounds.width, rock.bounds.height);
-			//if (!r1.overlaps(r2)) continue;
-			// IMPORTANT: must do all collisions for valid
-			// edge testing on rocks.
-		}
-		// Test collision: Bunny Head <-> Gold Coins
-		for (GoldCoin goldcoin : level.goldcoins) {
-			if (goldcoin.collected) continue;
-			r2.set(goldcoin.position.x, goldcoin.position.y, goldcoin.bounds.width, goldcoin.bounds.height);
-			if (!r1.overlaps(r2)) continue;
-			onCollisionWaterPlayerWithGoldCoin(goldcoin);
-			break;
-		}
-		// Test collision: Bunny Head <-> Feathers
-		for (LavaBlock feather : level.lavaBlocks) {
-			if (feather.collected) continue;
-			r2.set(feather.position.x, feather.position.y, feather.bounds.width, feather.bounds.height);
-			if (!r1.overlaps(r2)) continue;
-			onCollisionWaterPlayerWithFeather(feather);
-			break;
-		}
 	}
 }
