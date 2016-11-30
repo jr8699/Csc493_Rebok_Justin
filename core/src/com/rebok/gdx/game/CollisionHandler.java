@@ -10,7 +10,6 @@ import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
-import com.rebok.gdx.game.objects.WaterPlayer.JUMP_STATE;
 import com.rebok.gdx.game.util.AudioManager;
 
 /**
@@ -168,10 +167,13 @@ public class CollisionHandler implements ContactListener {
     {
     	if (objFixture.getBody().getUserData() instanceof Rock)
     	{
+    		System.out.println("Collision");
     		WaterPlayer player = (WaterPlayer)playerFixture.getBody().getUserData();
     	    player.acceleration.y = 0;
     	    player.velocity.y = 0;
-    	    player.jumpState = JUMP_STATE.GROUNDED;
+    	    player.isJumping = false;
+    	    player.jumped = false;
+    	    player.jumpTimer = 0;
     	    playerFixture.getBody().setLinearVelocity(player.velocity);
     	}
     	else if (objFixture.getBody().getUserData() instanceof GoldCoin)

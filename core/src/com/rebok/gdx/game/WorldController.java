@@ -25,7 +25,6 @@ import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
-import com.rebok.gdx.game.objects.WaterPlayer.JUMP_STATE;
 import com.rebok.gdx.game.screens.MenuScreen;
 import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.CameraHelper;
@@ -118,11 +117,11 @@ public class WorldController extends InputAdapter{
 		WaterPlayer player = level.waterPlayer;
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(player.position);
-		bodyDef.fixedRotation = true;
+		bodyDef.fixedRotation = false;
 
 		Body body = myWorld.createBody(bodyDef);
 		body.setType(BodyType.DynamicBody);
-		body.setGravityScale(0.0f);
+		body.setGravityScale(5.00f);
 		body.setUserData(player);
 		player.body = body;
 
@@ -260,7 +259,7 @@ public class WorldController extends InputAdapter{
 		}
 		level.update(deltaTime);
 		myWorld.step(deltaTime, 8, 3);
-		testCollisions();
+		//testCollisions();
 		cameraHelper.update(deltaTime);
 		if (!isGameOver() &&isPlayerInWater()) {
 			lives--;
@@ -277,35 +276,24 @@ public class WorldController extends InputAdapter{
 			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
 	}
 	
-	/**
-	 * Testing a waterPlayer against a rock
-	 * @param rock
-	 */
-	private void onCollisionWaterPlayerWithRock(Rock rock) {
-		WaterPlayer waterPlayer = level.waterPlayer;
-		float heightDifference = Math.abs(waterPlayer.position.y - (rock.position.y + rock.bounds.height));
-		if (heightDifference > 0.25f) {
-		    boolean hitRightEdge = waterPlayer.position.x > (rock.position.x + rock.bounds.width / 2.0f);
-		    if (hitRightEdge) {
-		    	waterPlayer.position.x = rock.position.x + rock.bounds.width;
-		    } else {
-		    	waterPlayer.position.x = rock.position.x - waterPlayer.bounds.width;
-		    }
-		    return;
-		}
-		switch (waterPlayer.jumpState) {
-		    case GROUNDED:
-		    	break;
-		    case FALLING:
-		    case JUMP_FALLING:
-		    	waterPlayer.position.y = rock.position.y + waterPlayer.bounds.height  + waterPlayer.origin.y;
-		    	waterPlayer.jumpState = JUMP_STATE.GROUNDED;
-		    	break;
-		    case JUMP_RISING:
-		    	waterPlayer.position.y = rock.position.y + waterPlayer.bounds.height + waterPlayer.origin.y;
-		    break;
-		}
-	}
+	///**
+	// * Testing a waterPlayer against a rock
+	// * @param rock
+	// */
+	//private void onCollisionWaterPlayerWithRock(Rock rock) {
+	//	WaterPlayer waterPlayer = level.waterPlayer;
+	//	float heightDifference = Math.abs(waterPlayer.position.y - (rock.position.y + rock.bounds.height));
+	//	if (heightDifference > 0.25f) {
+	//	    boolean hitRightEdge = waterPlayer.position.x > (rock.position.x + rock.bounds.width / 2.0f);
+	//	    if (hitRightEdge) {
+	//	    	waterPlayer.position.x = rock.position.x + rock.bounds.width;
+	//	    } else {
+	//	    	waterPlayer.position.x = rock.position.x - waterPlayer.bounds.width;
+	//	    }
+	//	    return;
+	//	}
+	//	//do
+	//}
 	
 	/**
 	 * Testing the waterPlayer against a coin
@@ -356,9 +344,8 @@ public class WorldController extends InputAdapter{
 		r1.set(level.waterPlayer.position.x, level.waterPlayer.position.y, level.waterPlayer.bounds.width, level.waterPlayer.bounds.height);
 		// Test collision: Bunny Head <-> Rocks
 		for (Rock rock : level.rocks) {
-			r2.set(rock.position.x, rock.position.y, rock.bounds.width, rock.bounds.height);
-			if (!r1.overlaps(r2)) continue;
-			onCollisionWaterPlayerWithRock(rock);
+			//r2.set(rock.position.x, rock.position.y, rock.bounds.width, rock.bounds.height);
+			//if (!r1.overlaps(r2)) continue;
 			// IMPORTANT: must do all collisions for valid
 			// edge testing on rocks.
 		}

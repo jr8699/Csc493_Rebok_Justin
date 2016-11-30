@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.rebok.gdx.game.Assets;
 import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.Constants;
@@ -19,17 +20,20 @@ public class WaterPlayer extends AbstractGameObject {
 	public ParticleEffect dustParticles = new ParticleEffect(); //dust
 	
 	public enum VIEW_DIRECTION { LEFT, RIGHT }
-	
-	public enum JUMP_STATE { GROUNDED, FALLING, JUMP_RISING, JUMP_FALLING }
-	
+
 	private TextureRegion regHead;
 	
 	public VIEW_DIRECTION viewDirection;
 	public float timeJumping;
-	public JUMP_STATE jumpState;
 	public boolean hasLavaPowerup;
 	public float timeLeftLavaPowerup;
+	
+	public boolean jumped = false;
+	public boolean canJump = true;
+	public boolean isJumping = false;
 
+	public int jumpTimer = 0;
+	
 	public WaterPlayer () {
 	    init();
 	}
@@ -50,8 +54,6 @@ public class WaterPlayer extends AbstractGameObject {
 		acceleration.set(0.0f, -25.0f);
 		// View direction
 		viewDirection = VIEW_DIRECTION.RIGHT;
-		// Jump state
-		jumpState = JUMP_STATE.FALLING;
 		timeJumping = 0;
 		// Power-ups
 		hasLavaPowerup = false;
@@ -67,32 +69,9 @@ public class WaterPlayer extends AbstractGameObject {
 	 * @param jumpKeyPressed
 	 */
 	public void setJumping (boolean jumpKeyPressed) {
-		switch (jumpState) {
-		
-		    case GROUNDED: // Character is standing on a platform
-		    	if (jumpKeyPressed) {
-		    		AudioManager.instance.play(Assets.instance.sounds.jump);
-		    		// Start counting jump time from the beginning
-		    		timeJumping = 0;
-		    		jumpState = JUMP_STATE.JUMP_RISING;
-		    	}
-		    	break;
-		    	
-		    case JUMP_RISING: // Rising in the air
-		    	if (!jumpKeyPressed)
-		    		jumpState = JUMP_STATE.JUMP_FALLING;
-		    	break;
-		    	
-		    case FALLING:// Falling down
-		    	
-		    case JUMP_FALLING: // Falling down after jump
-		        if (jumpKeyPressed && hasLavaPowerup) {
-		            AudioManager.instance.play(Assets.instance.sounds.jumpWithLava, 1,  
-		            MathUtils.random(1.0f, 1.1f));
-		            timeJumping = JUMP_TIME_OFFSET_FLYING;
-		            jumpState = JUMP_STATE.JUMP_RISING;
-		        }
-		        break;
+		if(jumpKeyPressed && !isJumping){
+			jumped = true;
+			jumpTimer = 0;
 		}
 	}
 	
@@ -137,14 +116,9 @@ public class WaterPlayer extends AbstractGameObject {
 	 */
 	@Override
 	public void update (float deltaTime) {
-		super.update(deltaTime);
-		updateMotionX(deltaTime);
+		super.updateMotionX(deltaTime);
 		updateMotionY(deltaTime);
-		if (body != null)
-		{
-			body.setLinearVelocity(velocity);
-			position.set(body.getPosition());
-		}
+		
 		if (velocity.x != 0) {
 			viewDirection = velocity.x < 0 ? VIEW_DIRECTION.LEFT : VIEW_DIRECTION.RIGHT;
 		}
@@ -165,44 +139,19 @@ public class WaterPlayer extends AbstractGameObject {
 	 */
 	@Override
 	protected void updateMotionY (float deltaTime) {
-		switch (jumpState) {
-	    	case GROUNDED:
-	    		jumpState = JUMP_STATE.FALLING;
-	    		if (velocity.x != 0) {
-	    			dustParticles.setPosition(position.x + dimension.x / 2,  
-	    			position.y);
-	    			dustParticles.start();
-	    		}
-	    		break;
-	    	case JUMP_RISING:
-	    		// Keep track of jump time
-	    		timeJumping += deltaTime;
-	    		// Jump time left?
-	    		if (timeJumping <= JUMP_TIME_MAX) {
-	    			// Still jumping
-	    			velocity.y = terminalVelocity.y;
-	    		}else{
-	    			jumpState = JUMP_STATE.JUMP_FALLING;
-	    			
-	    		}
-	    		break;
-	    	case FALLING:
-	    		//velocity.y = -terminalVelocity.y;
-	    		break;
-	    	case JUMP_FALLING:
-	    		// Add delta times to track jump time
-	    		//timeJumping += deltaTime;
-	    		// Jump to minimal height if jump key was pressed too short
-	    		//if (timeJumping > 0 && timeJumping <= JUMP_TIME_MIN) {
-	    			// Still jumping
-	    		//	velocity.y = terminalVelocity.y;
-	    		//}
-	    		velocity.y = -terminalVelocity.y;
-	    		break;
-		}
-		if (jumpState != JUMP_STATE.GROUNDED){
-			super.updateMotionY(deltaTime);
-			dustParticles.allowCompletion();
+		if (body != null)
+		{
+			if(jumped && !isJumping){
+				
+				Vector2 forceUp = new Vector2();
+				Vector2 point = origin;
+				forceUp.y = 8;
+				body.applyLinearImpulse(forceUp, point, true);
+				jumped = false;
+				isJumping = true;
+			}
+			body.applyForceToCenter(velocity, true);
+			position.set(body.getPosition());
 		}
 	}
 	

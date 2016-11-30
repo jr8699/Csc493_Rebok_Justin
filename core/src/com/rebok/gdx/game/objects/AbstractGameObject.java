@@ -112,6 +112,7 @@ public abstract class AbstractGameObject {
     protected void updateMotionY (float deltaTime) {
 		if (velocity.y != 0)
 		{
+			//System.out.println("VELOCITY");
 			if (velocity.y > 0)
 			{
 				velocity.y = Math.max(velocity.y - friction.y * deltaTime, 0);
