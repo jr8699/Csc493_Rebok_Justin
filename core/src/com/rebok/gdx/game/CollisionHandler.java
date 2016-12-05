@@ -12,6 +12,7 @@ import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
 import com.rebok.gdx.game.util.AudioManager;
+import com.rebok.gdx.game.Level;
 
 /**
  * Implement Box2D physics. Watches for collisions
@@ -21,11 +22,13 @@ import com.rebok.gdx.game.util.AudioManager;
 public class CollisionHandler implements ContactListener {
     private ObjectMap<Short, ObjectMap<Short, ContactListener>> listeners; //our list of objects w/ box2d physics
     private WorldController world; //the world
+    private Level level;
 
     //Constructor
     public CollisionHandler(WorldController w)
     {
     	world = w;
+    	level = world.level;
         listeners = new ObjectMap<Short, ObjectMap<Short, ContactListener>>();
     }
 
@@ -49,6 +52,8 @@ public class CollisionHandler implements ContactListener {
     {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
+        
+        processContact(contact);
 
         ContactListener listener = getListener(fixtureA.getFilterData().categoryBits, fixtureB.getFilterData().categoryBits);
         if (listener != null)
@@ -65,9 +70,7 @@ public class CollisionHandler implements ContactListener {
     {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
-
-        processContact(contact);
-
+        
         ContactListener listener = getListener(fixtureA.getFilterData().categoryBits, fixtureB.getFilterData().categoryBits);
         if (listener != null)
         {
@@ -171,6 +174,7 @@ public class CollisionHandler implements ContactListener {
     		System.out.println("Collision");
     		WaterPlayer player = (WaterPlayer)playerFixture.getBody().getUserData();
     	    playerFixture.getBody().setLinearVelocity(player.velocity);
+    	    level.waterPlayer.canJump = true;
     	}
     	else if (objFixture.getBody().getUserData() instanceof GoldCoin)
     	{

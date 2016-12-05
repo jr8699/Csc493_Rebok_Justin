@@ -29,6 +29,9 @@ public class WaterPlayer extends AbstractGameObject {
 	public float timeLeftLavaPowerup;
 	
 	public boolean jump;
+	public boolean canJump;
+	public boolean right; //movement
+	public boolean left;
 	
 	public WaterPlayer () {
 	    init();
@@ -38,6 +41,9 @@ public class WaterPlayer extends AbstractGameObject {
 	 * Constructor
 	 */
 	public void init () {
+		canJump = true;
+		right = false;
+		left = false;
 		dimension.set(1, 1);
 		regHead = Assets.instance.waterPlayer.waterPlayer;
 		// Center image on game object
@@ -45,7 +51,7 @@ public class WaterPlayer extends AbstractGameObject {
 		// Bounding box for collision detection
 		bounds.set(0, 0, dimension.x, dimension.y);
 		// Set physics values
-		terminalVelocity.set(3.0f, 4.0f);
+		terminalVelocity.set(10.0f, 15.0f);
 		friction.set(12.0f, 0.0f);
 		acceleration.set(0.0f, -25.0f);
 		// View direction
@@ -65,7 +71,7 @@ public class WaterPlayer extends AbstractGameObject {
 	 * @param jumpKeyPressed
 	 */
 	public void setJumping (boolean jumpKeyPressed) {
-		if(jumpKeyPressed){
+		if(jumpKeyPressed && canJump){
 			jump = true;
 		}else{
 			jump = false;
@@ -113,7 +119,7 @@ public class WaterPlayer extends AbstractGameObject {
 	 */
 	@Override
 	public void update (float deltaTime) {
-		super.updateMotionX(deltaTime);
+		updateMotionX(deltaTime);
 		updateMotionY(deltaTime);
 		
 		if (velocity.x != 0) {
@@ -129,7 +135,38 @@ public class WaterPlayer extends AbstractGameObject {
 				setLavaPowerup(false);
 			}
 		}
-}
+	}
+	
+	/**
+	 * Overridden for box2d
+	 */
+	@Override
+	public void updateMotionX(float delta){
+		if (body != null)
+		{
+			if(right){ //move right
+				body.applyLinearImpulse(new Vector2(0.75f,0.0f), origin, true);
+				right = false;
+			}else if(left){ //move left
+				body.applyLinearImpulse(new Vector2(-0.75f,0.0f), origin, true);
+				left = false;
+			}
+			//Cap velocity if it is higher than the terminal velocity
+			if(body.getLinearVelocity().x > terminalVelocity.x){//right
+				body.setLinearVelocity(new Vector2(terminalVelocity.x,0.0f));
+				body.setLinearVelocity(body.getLinearVelocity().sub(new Vector2(0.5f,2.5f))); //fall more
+			}else if(body.getLinearVelocity().x < -terminalVelocity.x){ //left
+				body.setLinearVelocity(new Vector2(-terminalVelocity.x,0.0f));
+				body.setLinearVelocity(body.getLinearVelocity().sub(new Vector2(-0.5f,2.5f))); //fall more
+			}
+			if(body.getLinearVelocity().x > 0){ //slow down if no keys pressed
+				body.setLinearVelocity(body.getLinearVelocity().sub(new Vector2(0.25f,0.0f)));
+			}else if(body.getLinearVelocity().x < 0){
+				body.setLinearVelocity(body.getLinearVelocity().sub(new Vector2(-0.25f,0.0f)));
+			}
+		position.set(body.getPosition());
+		}
+	}
 	
 	/**
 	 * Overridden to include jump state in our y axis calculations
@@ -138,13 +175,13 @@ public class WaterPlayer extends AbstractGameObject {
 	protected void updateMotionY (float deltaTime) {
 		if (body != null)
 		{
-			if(jump){
-				Vector2 forceUp = new Vector2();
-				Vector2 point = origin;
-				forceUp.y = 2.0f;
-				body.applyLinearImpulse(forceUp, point, true);
+			if(jump) //jump
+				body.applyLinearImpulse(new Vector2(0.0f,3.0f), origin, true);
+			
+			if(body.getLinearVelocity().y > terminalVelocity.y){ //cap at terminal velocity
+				body.setLinearVelocity(new Vector2(0.0f,terminalVelocity.y));
+				canJump = false; //prevent player from jumping again
 			}
-			body.applyForceToCenter(velocity, true);
 			position.set(body.getPosition());
 		}
 	}

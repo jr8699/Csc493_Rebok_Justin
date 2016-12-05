@@ -54,6 +54,10 @@ public class WorldController extends InputAdapter{
 	
 	private Game game;
 	
+	//for the sensors
+	private short coinMask = 0x001;
+	private short playerMask = 0x002;
+	
 	//Constructor
 	public WorldController(Game game) {
 		this.game = game;
@@ -126,7 +130,10 @@ public class WorldController extends InputAdapter{
 			origin.x = coin.bounds.width / 2.0f;
 			origin.y = coin.bounds.height / 2.0f;
 			polygonShape.setAsBox(coin.bounds.width / 2.0f, (coin.bounds.height-0.04f) / 2.0f, origin, 0);
-			FixtureDef fixtureDef = new FixtureDef();
+			FixtureDef fixtureDef = new FixtureDef(); //make the coins a sensor
+			fixtureDef.isSensor = true;
+			fixtureDef.filter.categoryBits = coinMask;
+			fixtureDef.filter.maskBits = playerMask;
 			fixtureDef.shape = polygonShape;
 			body.createFixture(fixtureDef);
 			polygonShape.dispose();
@@ -137,7 +144,6 @@ public class WorldController extends InputAdapter{
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.position.set(player.position);
 		bodyDef.fixedRotation = false;
-
 		Body body = myWorld.createBody(bodyDef);
 		body.setType(BodyType.DynamicBody);
 		body.setGravityScale(5.00f);
@@ -151,6 +157,8 @@ public class WorldController extends InputAdapter{
 
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = polygonShape;
+		fixtureDef.filter.categoryBits = playerMask;
+		fixtureDef.filter.maskBits = coinMask;
 		// fixtureDef.friction = 0.5f;
 		body.createFixture(fixtureDef);
 		polygonShape.dispose();
@@ -234,14 +242,9 @@ public class WorldController extends InputAdapter{
 		  if (cameraHelper.hasTarget(level.waterPlayer)) {
 		    // Player Movement
 			  if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-				  level.waterPlayer.velocity.x = -level.waterPlayer.terminalVelocity.x;
+				  level.waterPlayer.left = true;
 			  }else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-				  level.waterPlayer.velocity.x = level.waterPlayer.terminalVelocity.x;
-			  } else {
-				  // Execute auto-forward movement on non-desktop platform
-				  if (Gdx.app.getType() != ApplicationType.Desktop) {
-					  level.waterPlayer.velocity.x = level.waterPlayer.terminalVelocity.x;
-				  }
+				  level.waterPlayer.right = true;
 			  }
 			  // player Jump
 			  if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE)) {
@@ -281,7 +284,6 @@ public class WorldController extends InputAdapter{
 		for(Body b : objectsToRemove){ //remove old gold coins
 			if(b.getUserData() != null){
 			if(((GoldCoin)b.getUserData()).toRemove == true){
-				System.out.println("WHHYHYHYHHYHY");
 				myWorld.destroyBody(b);
 				b.setUserData(null);
 				b = null;
