@@ -170,8 +170,6 @@ public class CollisionHandler implements ContactListener {
     	{
     		System.out.println("Collision");
     		WaterPlayer player = (WaterPlayer)playerFixture.getBody().getUserData();
-    	    player.acceleration.y = 0;
-    	    player.velocity.y = 0;
     	    playerFixture.getBody().setLinearVelocity(player.velocity);
     	}
     	else if (objFixture.getBody().getUserData() instanceof GoldCoin)
