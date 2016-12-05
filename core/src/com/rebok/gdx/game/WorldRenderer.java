@@ -24,7 +24,7 @@ public class WorldRenderer implements Disposable{
 	private OrthographicCamera cameraGUI; //Camera for the gui
 	
 	// For Box2D Debugging
-	private static final boolean DEBUG_DRAW_BOX2D_WORLD = true;
+	private static final boolean DEBUG_DRAW_BOX2D_WORLD = false;
 	private Box2DDebugRenderer b2DebugRenderer;
 	  
 	public WorldRenderer(WorldController worldController) {
@@ -165,6 +165,7 @@ public class WorldRenderer implements Disposable{
 		  renderGuiScore(batch);
 		  // draw collected feather icon (anchored to top left edge)
 		  renderGuiLavaPowerup(batch);
+		  renderGuiIcePowerup(batch);
 		  // draw extra lives icon + text (anchored to top right edge)
 		  renderGuiExtraLive(batch);
 		  // draw FPS text (anchored to bottom right edge)
@@ -206,12 +207,34 @@ public class WorldRenderer implements Disposable{
 		    		batch.setColor(1, 1, 1, 0.5f);
 		    	}
 		    }
-		    batch.draw(Assets.instance.blocks.lavaBlock, x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0);
+		    batch.draw(Assets.instance.lava.lavaBlock, x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0);
 		    batch.setColor(1, 1, 1, 1);
 		    Assets.instance.fonts.defaultSmall.draw(batch, "" + (int)timeLeftLavaPowerup, x + 60, y + 57);
 		}
 	}
 	
+	/**
+	 * Displays a feather by the gold coin if the player has the feather powerup
+	 * @param batch
+	 */
+	private void renderGuiIcePowerup (SpriteBatch batch) {
+		float x = -15;
+		float y = 30;
+		float timeLeftIcePowerup = worldController.level.waterPlayer.timeLeftIcePowerup;
+		if (timeLeftIcePowerup > 0) {
+		    // Start icon fade in/out if the left power-up time
+		    // is less than 4 seconds. The fade interval is set
+		    // to 5 changes per second.
+		    if (timeLeftIcePowerup < 4) {
+		    	if (((int)(timeLeftIcePowerup * 5) % 2) != 0) {
+		    		batch.setColor(1, 1, 1, 0.5f);
+		    	}
+		    }
+		    batch.draw(Assets.instance.ice.ice, x, y, 100, 50, 100, 100, 0.35f, -0.35f, 0);
+		    batch.setColor(1, 1, 1, 1);
+		    Assets.instance.fonts.defaultSmall.draw(batch, "" + (int)timeLeftIcePowerup, x + 60, y + 57);
+		}
+	}
 	
 	/**
 	 * Destroy objects

@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.Clouds;
 import com.rebok.gdx.game.objects.GoldCoin;
+import com.rebok.gdx.game.objects.IceBlock;
 import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.LavaOverlay;
 import com.rebok.gdx.game.objects.Mountains;
@@ -24,6 +25,7 @@ public class Level {
 	public WaterPlayer waterPlayer; //the player
 	public Array<GoldCoin> goldcoins; //all the coins on the level
 	public Array<LavaBlock> lavaBlocks; //all the lava blocks on the level
+	public Array<IceBlock> iceBlocks; //all the lava blocks on the level
 	
 	public enum BLOCK_TYPE { //Block type enumerable, All data for the level
 	    EMPTY(0, 0, 0), // black
@@ -70,6 +72,7 @@ public class Level {
 	    rocks = new Array<Rock>();
 	    goldcoins = new Array<GoldCoin>();
 	    lavaBlocks = new Array<LavaBlock>();
+	    iceBlocks = new Array<IceBlock>();
 	    // load image file that represents the level data
 	    Pixmap pixmap = new Pixmap(Gdx.files.internal(filename));
 	    // scan pixels from top-left to bottom-right
@@ -110,6 +113,10 @@ public class Level {
 	    			}
 	    			//ice block
 	    			else if (BLOCK_TYPE.ITEM_ICE_BLOCK.sameColor(currentPixel)) {
+	    				obj = new IceBlock();
+	    		        offsetHeight = -1.5f;
+	    		        obj.position.set(pixelX,baseHeight * obj.dimension.y + offsetHeight);
+	    		        iceBlocks.add((IceBlock)obj);
 	    			}
 	    			//lava block
 	    			else if (BLOCK_TYPE.ITEM_LAVA_BLOCK.sameColor(currentPixel)){
@@ -167,7 +174,10 @@ public class Level {
 	    }
 	    // Draw lavaBlocks
 	    for (LavaBlock lava : lavaBlocks)
-	    	lava.render(batch);
+	    	if(!lava.toRemove) lava.render(batch);
+	    // Draw lavaBlocks
+	    for (IceBlock ice : iceBlocks)
+	    	if(!ice.toRemove) ice.render(batch);
 	    // Draw Player Character
 	    waterPlayer.render(batch);
 	    // Draw Water Overlay
@@ -188,6 +198,8 @@ public class Level {
 		    goldCoin.update(deltaTime);
 		for(LavaBlock lava : lavaBlocks)
 			lava.update(deltaTime);
+		for(IceBlock ice : iceBlocks)
+			ice.update(deltaTime);
 		clouds.update(deltaTime);
 }
 }

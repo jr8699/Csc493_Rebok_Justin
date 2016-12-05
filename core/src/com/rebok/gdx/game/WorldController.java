@@ -22,6 +22,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.GoldCoin;
+import com.rebok.gdx.game.objects.IceBlock;
 import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
@@ -57,6 +58,7 @@ public class WorldController extends InputAdapter{
 	//for the sensors
 	private short coinMask = 0x001;
 	private short playerMask = 0x002;
+	private short lavaMask = 0x003;
 	
 	//Constructor
 	public WorldController(Game game) {
@@ -123,13 +125,54 @@ public class WorldController extends InputAdapter{
 			bodyDef.position.set(coin.position);
 			bodyDef.type = BodyType.StaticBody;
 			Body body = myWorld.createBody(bodyDef);
-			//body.setType(BodyType.DynamicBody);
 			body.setUserData(coin);
 			coin.body = body;
 			PolygonShape polygonShape = new PolygonShape();
 			origin.x = coin.bounds.width / 2.0f;
 			origin.y = coin.bounds.height / 2.0f;
 			polygonShape.setAsBox(coin.bounds.width / 2.0f, (coin.bounds.height-0.04f) / 2.0f, origin, 0);
+			FixtureDef fixtureDef = new FixtureDef(); //make the coins a sensor
+			fixtureDef.isSensor = true;
+			fixtureDef.filter.categoryBits = coinMask;
+			fixtureDef.filter.maskBits = playerMask;
+			fixtureDef.shape = polygonShape;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
+		
+		for (LavaBlock lava : level.lavaBlocks)
+		{
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.position.set(lava.position);
+			bodyDef.type = BodyType.StaticBody;
+			Body body = myWorld.createBody(bodyDef);
+			body.setUserData(lava);
+			lava.body = body;
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = lava.bounds.width / 2.0f;
+			origin.y = lava.bounds.height / 2.0f;
+			polygonShape.setAsBox(lava.bounds.width / 2.0f, (lava.bounds.height-0.04f) / 2.0f, origin, 0);
+			FixtureDef fixtureDef = new FixtureDef(); //make the coins a sensor
+			fixtureDef.isSensor = true;
+			fixtureDef.filter.categoryBits = coinMask;
+			fixtureDef.filter.maskBits = playerMask;
+			fixtureDef.shape = polygonShape;
+			body.createFixture(fixtureDef);
+			polygonShape.dispose();
+		}
+		
+		for (IceBlock ice : level.iceBlocks)
+		{
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.position.set(ice.position);
+			bodyDef.type = BodyType.StaticBody;
+			Body body = myWorld.createBody(bodyDef);
+			body.setUserData(ice);
+			ice.body = body;
+			PolygonShape polygonShape = new PolygonShape();
+			origin.x = ice.bounds.width / 2.0f;
+			origin.y = ice.bounds.height / 2.0f;
+			polygonShape.setAsBox(ice.bounds.width / 2.0f, (ice.bounds.height-0.04f) / 2.0f, origin, 0);
 			FixtureDef fixtureDef = new FixtureDef(); //make the coins a sensor
 			fixtureDef.isSensor = true;
 			fixtureDef.filter.categoryBits = coinMask;
@@ -283,11 +326,19 @@ public class WorldController extends InputAdapter{
 		myWorld.step(deltaTime, 8, 3);
 		for(Body b : objectsToRemove){ //remove old gold coins
 			if(b.getUserData() != null){
-			if(((GoldCoin)b.getUserData()).toRemove == true){
-				myWorld.destroyBody(b);
-				b.setUserData(null);
-				b = null;
-			}
+				if(b.getUserData() instanceof GoldCoin){
+					if(((GoldCoin)b.getUserData()).toRemove == true){
+						myWorld.destroyBody(b);
+						b.setUserData(null);
+						b = null;
+					}
+				}else if(b.getUserData() instanceof LavaBlock){
+					if(((LavaBlock)b.getUserData()).toRemove == true){
+						myWorld.destroyBody(b);
+						b.setUserData(null);
+						b = null;
+					}
+				}
 			}
 		}
 		cameraHelper.update(deltaTime);

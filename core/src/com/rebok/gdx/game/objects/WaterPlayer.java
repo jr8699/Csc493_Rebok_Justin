@@ -27,6 +27,8 @@ public class WaterPlayer extends AbstractGameObject {
 	public float timeJumping;
 	public boolean hasLavaPowerup;
 	public float timeLeftLavaPowerup;
+	public float timeLeftIcePowerup;
+	public boolean hasIcePowerup;
 	
 	public boolean jump;
 	public boolean canJump;
@@ -60,6 +62,8 @@ public class WaterPlayer extends AbstractGameObject {
 		// Power-ups
 		hasLavaPowerup = false;
 		timeLeftLavaPowerup = 0;
+		hasIcePowerup = false;
+		timeLeftIcePowerup = 0;
 		// Particles
 		dustParticles.load(Gdx.files.internal("../rebok-gdx-game-core/assets/particles/dust.pfx"),  
 		Gdx.files.internal("../rebok-gdx-game-core/assets/particles"));
@@ -100,18 +104,29 @@ public class WaterPlayer extends AbstractGameObject {
 	/**
 	 * Reset speed when a lava block runs out
 	 */
-	private void resetSpeed(){
-		terminalVelocity.x = 3;
-		terminalVelocity.y = 4;
-	}
+	private void resetSpeed(){ terminalVelocity.set(10.0f,15.0f); }
 	
 	/**
 	 * Enhance the players speed from a lava block
 	 */
-	private void enhanceSpeed(){
-		terminalVelocity.x = 6;
-		terminalVelocity.y = 8;
+	private void enhanceSpeed(){ terminalVelocity.set(15.0f,20.0f); }
+	
+	/**
+	 * Enhance the players speed from an ice block
+	 */
+	private void denhanceSpeed(){ terminalVelocity.set(5.0f,10.0f); }
+	
+	/**
+	 * For when a player picks up the feather powerup
+	 * @param pickedUp
+	 */
+	public void setIcePowerup (boolean pickedUp) {
+		hasIcePowerup = pickedUp;
+		if (pickedUp) {
+		    timeLeftIcePowerup = Constants.ITEM_FEATHER_POWERUP_DURATION;
+		}
 	}
+	
 	
 	/**
 	 * Update function, overridden to also change the view direction
@@ -133,6 +148,16 @@ public class WaterPlayer extends AbstractGameObject {
 				timeLeftLavaPowerup = 0;
 				resetSpeed(); //take away the speed boost
 				setLavaPowerup(false);
+			}
+		}
+		if (timeLeftIcePowerup > 0) {
+			denhanceSpeed(); //double the players speed
+			timeLeftIcePowerup -= deltaTime;
+			if (timeLeftIcePowerup < 0) {
+				// disable power-up
+				timeLeftIcePowerup = 0;
+				resetSpeed(); //take away the speed boost
+				setIcePowerup(false);
 			}
 		}
 	}
@@ -199,7 +224,10 @@ public class WaterPlayer extends AbstractGameObject {
 		batch.setColor(CharacterSkin.values()[GamePreferences.instance.charSkin].getColor());
 		
 		if (hasLavaPowerup) {
-			batch.setColor(1.0f, 0.8f, 0.0f, 1.0f);
+			batch.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		}
+		if (hasIcePowerup) {
+			batch.setColor(0.0f, 0.0f, 1.0f, 1.0f);
 		}
 		// Draw image
 		reg = regHead;

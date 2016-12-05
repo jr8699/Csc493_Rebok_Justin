@@ -9,12 +9,12 @@ import com.rebok.gdx.game.Assets;
  * @author Justin
  *
  */
-public class LavaBlock extends AbstractGameObject {
+public class IceBlock extends AbstractGameObject {
 	private TextureRegion regLavaBlock; //for the texture
 	public boolean collected; //whether the block has been collected or not
 	public boolean toRemove;
 	  
-	public LavaBlock() {
+	public IceBlock() {
 	    init();
 	}
 	
@@ -23,7 +23,7 @@ public class LavaBlock extends AbstractGameObject {
 	 */
 	private void init () {
 	    dimension.set(0.5f, 0.5f);
-	    regLavaBlock = Assets.instance.lava.lavaBlock;
+	    regLavaBlock = Assets.instance.ice.ice;
 	    // Set bounding box for collision detection
 	    bounds.set(0, 0, dimension.x, dimension.y);
 	    collected = false;

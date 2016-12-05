@@ -24,9 +24,10 @@ public class Assets implements Disposable, AssetErrorListener {
     public AssetWaterPlayer waterPlayer; //water player asset
     public AssetRock rock; //Rock asset
     public AssetGoldCoin goldCoin; //Coin asset
-    public AssetBlocks blocks; //Feather asset
+    public AssetLavaBlocks lava; //Feather asset
     public AssetLevelDecoration levelDecoration; //Level decorations asset
     public AssetFonts fonts;
+    public AssetIceBlocks ice;
     
     public AssetSounds sounds;
     public AssetMusic music;
@@ -73,7 +74,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	    waterPlayer = new AssetWaterPlayer(atlas);
 	    rock = new AssetRock(atlas);
 	    goldCoin = new AssetGoldCoin(atlas);
-	    blocks = new AssetBlocks(atlas);
+	    lava = new AssetLavaBlocks(atlas);
+	    ice = new AssetIceBlocks(atlas);
 	    fonts = new AssetFonts();
 	    levelDecoration = new AssetLevelDecoration(atlas);
 	    sounds = new AssetSounds(assetManager);
@@ -168,24 +170,38 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 	
 	/**
-	 * Feather asset
+	 * lava block asset
 	 * @author Justin
 	 *
 	 */
-	public class AssetBlocks {
-	    public final AtlasRegion ice; //ice
+	public class AssetLavaBlocks {
 	    public final AtlasRegion lavaBlock; //lavablock
 	    
 	    /**
 	     * Constructor for the feather asset
 	     * @param atlas
 	     */
-	    public AssetBlocks (TextureAtlas atlas) {
-	        ice = atlas.findRegion("ice_block");
+	    public AssetLavaBlocks (TextureAtlas atlas) {
 	        lavaBlock = atlas.findRegion("lava_block");
 	    }
 	}
 	
+	/**
+	 *ice block asset
+	 * @author Justin
+	 *
+	 */
+	public class AssetIceBlocks {
+	    public final AtlasRegion ice; //ice
+	    
+	    /**
+	     * Constructor for the feather asset
+	     * @param atlas
+	     */
+	    public AssetIceBlocks (TextureAtlas atlas) {
+	        ice = atlas.findRegion("ice_block");
+	    }
+	}
 	/**
 	 * Level decorations
 	 * @author Justin

@@ -9,6 +9,8 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.GoldCoin;
+import com.rebok.gdx.game.objects.IceBlock;
+import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
 import com.rebok.gdx.game.util.AudioManager;
@@ -186,6 +188,18 @@ public class CollisionHandler implements ContactListener {
 
     		Body block = objFixture.getBody();
     		((GoldCoin)block.getUserData()).toRemove = true; //for removal
+    		world.flagForRemoval(block);
+    	}else if (objFixture.getBody().getUserData() instanceof LavaBlock){
+    		WaterPlayer p = (WaterPlayer)playerFixture.getBody().getUserData();
+    		p.setLavaPowerup(true);
+    		Body block = objFixture.getBody();
+    		((LavaBlock)block.getUserData()).toRemove = true; //for removal
+    		world.flagForRemoval(block);
+    	}else if (objFixture.getBody().getUserData() instanceof IceBlock){
+    		WaterPlayer p = (WaterPlayer)playerFixture.getBody().getUserData();
+    		p.setIcePowerup(true);
+    		Body block = objFixture.getBody();
+    		((IceBlock)block.getUserData()).toRemove = true; //for removal
     		world.flagForRemoval(block);
     	}
     }
