@@ -134,6 +134,7 @@ public class WaterPlayer extends AbstractGameObject {
 	 */
 	@Override
 	public void update (float deltaTime) {
+		dustParticles.update(deltaTime);
 		updateMotionX(deltaTime);
 		updateMotionY(deltaTime);
 		
@@ -190,6 +191,7 @@ public class WaterPlayer extends AbstractGameObject {
 				body.setLinearVelocity(body.getLinearVelocity().sub(new Vector2(-0.25f,0.0f)));
 			}
 		position.set(body.getPosition());
+		dustParticles.setPosition(position.x, position.y);
 		}
 	}
 	
