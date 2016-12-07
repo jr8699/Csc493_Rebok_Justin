@@ -13,7 +13,7 @@ background
   index: -1
 bunny
   rotate: false
-  xy: 805, 683
+  xy: 666, 268
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
@@ -23,6 +23,20 @@ coins
   xy: 2, 123
   size: 510, 357
   orig: 510, 357
+  offset: 0, 0
+  index: -1
+highscores-dn
+  rotate: false
+  xy: 805, 813
+  size: 150, 150
+  orig: 150, 150
+  offset: 0, 0
+  index: -1
+highscores-up
+  rotate: false
+  xy: 805, 813
+  size: 150, 150
+  orig: 150, 150
   offset: 0, 0
   index: -1
 info
@@ -41,28 +55,28 @@ logo
   index: -1
 options-dn
   rotate: false
-  xy: 805, 813
+  xy: 514, 246
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 options-up
   rotate: false
-  xy: 805, 813
+  xy: 514, 246
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 play-dn
   rotate: false
-  xy: 514, 246
+  xy: 805, 661
   size: 150, 150
   orig: 150, 150
   offset: 0, 0
   index: -1
 play-up
   rotate: false
-  xy: 514, 246
+  xy: 805, 661
   size: 150, 150
   orig: 150, 150
   offset: 0, 0

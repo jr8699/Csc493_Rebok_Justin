@@ -45,6 +45,11 @@ public class MenuScreen extends AbstractGameScreen {
 	private Image imgBunny;
 	private Button btnMenuPlay;
 	private Button btnMenuOptions;
+	
+	//highscore stuff
+	private Button highScores;
+	private boolean highScoreSelected = false;
+	private Window highScoresWindow;
 	// options
 	private Window winOptions;
 	private TextButton btnWinOptSave;
@@ -83,7 +88,7 @@ public class MenuScreen extends AbstractGameScreen {
 	    }
 	    stage.act(deltaTime);
 	    stage.draw();
-	    stage.setDebugAll(true); //changed from the book
+	    stage.setDebugAll(false); //changed from the book
 	}
 	
 	/**
@@ -246,6 +251,7 @@ public class MenuScreen extends AbstractGameScreen {
 		Table layerLogos = buildLogosLayer();
 		Table layerControls = buildControlsLayer();
 		Table layerOptionsWindow = buildOptionsWindowLayer();
+		Table layerHighScoreWindow = buildHighScoreWindowLayer();
 		// assemble stage for menu screen
 		stage.clear();
 		Stack stack = new Stack();
@@ -256,6 +262,7 @@ public class MenuScreen extends AbstractGameScreen {
 		stack.add(layerLogos);
 		stack.add(layerControls);
 		stage.addActor(layerOptionsWindow);
+		stage.addActor(layerHighScoreWindow);
 	}
 	
 	/**
@@ -333,10 +340,6 @@ public class MenuScreen extends AbstractGameScreen {
 	 */
 	private Table buildObjectsLayer () {
 	    Table layer = new Table();
-	    // + Coins
-	    imgCoins = new Image(skinCanyonBunny, "coins");
-	    layer.addActor(imgCoins);
-	    imgCoins.setPosition(135, 80);
 	    // + Bunny
 	    imgBunny = new Image(skinCanyonBunny, "bunny");
 	    layer.addActor(imgBunny);
@@ -360,6 +363,28 @@ public class MenuScreen extends AbstractGameScreen {
 		layer.add(imgInfo).bottom();
 		if (debugEnabled) layer.debug();
 		return layer;
+	}
+	
+	/**
+	 * Load the highscores
+	 */
+	private void loadHighScore(){
+		
+	}
+	
+	/**
+	 * When the highscore button was pressed
+	 */
+	public void onHighScoreClicked(){
+		if(!highScoreSelected){
+			loadHighScore();
+			btnMenuPlay.setVisible(false);
+			btnMenuOptions.setVisible(false);
+			//winOptions.setVisible(true);
+		}else{
+			btnMenuPlay.setVisible(true);
+			btnMenuOptions.setVisible(true);
+		}
 	}
 	
 	/**
@@ -392,6 +417,19 @@ public class MenuScreen extends AbstractGameScreen {
 		}
 		});
 		
+		layer.bottom();
+		// + Highscores Button
+		highScores = new Button(skinCanyonBunny, "highscores");
+		layer.add(highScores);
+		highScores.addListener(new ChangeListener() {
+			
+		@Override
+		public void changed (ChangeEvent event, Actor actor) {
+		    onHighScoreClicked();
+		}
+		});
+		
+		
 		if (debugEnabled) layer.debug();
 		return layer;
 	}
@@ -420,6 +458,23 @@ public class MenuScreen extends AbstractGameScreen {
 		// Move options window to bottom right corner
 		winOptions.setPosition(Constants.VIEWPORT_GUI_WIDTH - winOptions.getWidth() - 50, 50);
 		return winOptions;
+	}
+	
+	/**
+	 * Build the window layer
+	 * @return
+	 */
+	private Table buildHighScoreWindowLayer () {
+		highScoresWindow = new Window("HighScores", skinLibgdx);
+		// Make options window slightly transparent
+		highScoresWindow.setColor(1, 1, 1, 0.8f);
+		// Hide options window by default
+		highScoresWindow.setVisible(false);
+		// Let TableLayout recalculate widget sizes and positions
+		highScoresWindow.pack();
+		// Move options window to bottom right corner
+		highScoresWindow.setPosition(Constants.VIEWPORT_GUI_WIDTH / 2, 50); //center bottom
+		return highScoresWindow;
 	}
 	
 	/**
