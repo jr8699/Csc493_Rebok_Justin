@@ -4,14 +4,19 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -30,6 +35,8 @@ import com.rebok.gdx.game.screens.MenuScreen;
 import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.CameraHelper;
 import com.rebok.gdx.game.util.Constants;
+import com.rebok.gdx.game.util.HighScoreHelper;
+import com.rebok.gdx.game.util.Highscores;
 
 /**
  * Controls the world
@@ -44,42 +51,45 @@ public class WorldController extends InputAdapter{
 	public int score; //Current score
 	public float livesVisual; //visual lives
 	public float scoreVisual; //visual score
-	
+
 	// Rectangles for collision detection
 	private Rectangle r1 = new Rectangle();
 	private Rectangle r2 = new Rectangle();
 	private float timeLeftGameOverDelay; //level time left
-	
+
 	public Array<Body> objectsToRemove; //for box2d physics
 	public World myWorld;
-	
+
 	private Game game;
-	
+
 	//for the sensors
 	private short coinMask = 0x001;
 	private short playerMask = 0x002;
 	private short lavaMask = 0x003;
-	
+
+	private boolean enteredScore;
+
 	//Constructor
 	public WorldController(Game game) {
 		this.game = game;
 		init();
 	}
-	
-	
+
+
 	//Constructor
 	private void initLevel(){
-		score = 0;
+		score = Highscores.instance.currentScore;
 		scoreVisual = score;
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.waterPlayer);
 		initPhysics();
-	}  
-	
+	}
+
 	/**
 	 * Constructor code
 	 */
 	private void init() {
+		enteredScore = false;
 		objectsToRemove = new Array<Body>();
 		cameraHelper = new CameraHelper();
 		lives = Constants.LIVES_START;
@@ -88,7 +98,7 @@ public class WorldController extends InputAdapter{
 		Gdx.input.setInputProcessor(this);
 		initLevel();
 	}
-	
+
 	/**
 	 * Initialize the physics
 	 * @author Dr.Girard, Justin
@@ -139,7 +149,7 @@ public class WorldController extends InputAdapter{
 			body.createFixture(fixtureDef);
 			polygonShape.dispose();
 		}
-		
+
 		for (LavaBlock lava : level.lavaBlocks)
 		{
 			BodyDef bodyDef = new BodyDef();
@@ -160,7 +170,7 @@ public class WorldController extends InputAdapter{
 			body.createFixture(fixtureDef);
 			polygonShape.dispose();
 		}
-		
+
 		for (IceBlock ice : level.iceBlocks)
 		{
 			BodyDef bodyDef = new BodyDef();
@@ -181,7 +191,7 @@ public class WorldController extends InputAdapter{
 			body.createFixture(fixtureDef);
 			polygonShape.dispose();
 		}
-		
+
 		// For PLayer
 		WaterPlayer player = level.waterPlayer;
 		BodyDef bodyDef = new BodyDef();
@@ -206,7 +216,7 @@ public class WorldController extends InputAdapter{
 		body.createFixture(fixtureDef);
 		polygonShape.dispose();
 	}
-	
+
 	/**
 	 * Flag an object for removal, box2d
 	 * @param obj
@@ -215,7 +225,7 @@ public class WorldController extends InputAdapter{
 	{
 		objectsToRemove.add(obj);
 	}
-	
+
 	/**
 	 * Get the game status depending on the player's lives
 	 * @return
@@ -223,7 +233,7 @@ public class WorldController extends InputAdapter{
 	public boolean isGameOver () {
 		return lives < 0;
 	}
-	
+
 	/**
 	 * Find out if the player hit the water
 	 * @return
@@ -231,15 +241,35 @@ public class WorldController extends InputAdapter{
 	public boolean isPlayerInWater () {
 		return level.waterPlayer.position.y < -5;
 	}
-	
+
+	/**
+	 * Add a high score to the highscores file.
+	 * Also preserves the state of the score between live loss
+	 */
+	public void addHighScore(){
+		if(lives >= 0){ //keep playing the game
+			if(Highscores.instance.currentScore < score){
+				Highscores.instance.currentScore = score;
+			}
+		}else{//bring up to prompt to enter a name
+			if(!enteredScore){
+				HighScoreHelper listener = new HighScoreHelper();
+				Gdx.input.getTextInput(listener, "High Scores", "Enter your name", "");
+				enteredScore = true;
+			}
+		}
+	}
+
+
 	/**
 	 * Goes back to the menu screen
 	 */
 	private void backToMenu () {
 		// switch to menu screen
+		addHighScore();
 		game.setScreen(new MenuScreen(game));
 	}
-	
+
 	/**
 	 * Used for debugging, also includes movement of sprites and the camera
 	 * @param deltaTime
@@ -250,33 +280,33 @@ public class WorldController extends InputAdapter{
 			// Camera Controls (move)
 			float camMoveSpeed = 5 * deltaTime;
 			float camMoveSpeedAccelerationFactor = 5;
-			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) 
+			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 				camMoveSpeed *= camMoveSpeedAccelerationFactor;
-			if (Gdx.input.isKeyPressed(Keys.LEFT)) 
+			if (Gdx.input.isKeyPressed(Keys.LEFT))
 				moveCamera(-camMoveSpeed, 0);
-			if (Gdx.input.isKeyPressed(Keys.RIGHT)) 
+			if (Gdx.input.isKeyPressed(Keys.RIGHT))
 				moveCamera(camMoveSpeed, 0);
-			if (Gdx.input.isKeyPressed(Keys.UP)) 
+			if (Gdx.input.isKeyPressed(Keys.UP))
 				moveCamera(0, camMoveSpeed);
-			if (Gdx.input.isKeyPressed(Keys.DOWN)) 
+			if (Gdx.input.isKeyPressed(Keys.DOWN))
 				moveCamera(0, -camMoveSpeed);
-			if (Gdx.input.isKeyPressed(Keys.BACKSPACE))  
+			if (Gdx.input.isKeyPressed(Keys.BACKSPACE))
 				cameraHelper.setPosition(0, 0);
 		}
-		
+
 	    // Camera Controls (zoom)
 	    float camZoomSpeed = 1 * deltaTime;
 	    float camZoomSpeedAccelerationFactor = 5;
-	    if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) 
+	    if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 	    	camZoomSpeed *= camZoomSpeedAccelerationFactor;
-	    if (Gdx.input.isKeyPressed(Keys.COMMA)) 
+	    if (Gdx.input.isKeyPressed(Keys.COMMA))
 	    	cameraHelper.addZoom(camZoomSpeed);
 	    if (Gdx.input.isKeyPressed(Keys.PERIOD))
 	    	cameraHelper.addZoom(-camZoomSpeed);
-	    if (Gdx.input.isKeyPressed(Keys.SLASH)) 
+	    if (Gdx.input.isKeyPressed(Keys.SLASH))
 	    	cameraHelper.setZoom(1);
 	}
-	
+
 	/**
 	 * Handle input. Movement, etc.
 	 * @param deltaTime
@@ -297,7 +327,7 @@ public class WorldController extends InputAdapter{
 			  }
 		  }
 }
-	
+
 	/**
 	 * Move the Camera
 	 * @param x
@@ -308,7 +338,7 @@ public class WorldController extends InputAdapter{
 		y += cameraHelper.getPosition().y;
 		cameraHelper.setPosition(x, y);
 	}
-	
+
 	/**
 	 * Frame update, update our test sprites and the camera
 	 * @param deltaTime
@@ -317,7 +347,7 @@ public class WorldController extends InputAdapter{
 		handleDebugInput(deltaTime);
 		if (isGameOver()) {
 		timeLeftGameOverDelay -= deltaTime;
-		if (timeLeftGameOverDelay< 0) 
+		if (timeLeftGameOverDelay< 0)
 			backToMenu();
 		} else {
 			handleInputGame(deltaTime);
@@ -344,6 +374,7 @@ public class WorldController extends InputAdapter{
 		cameraHelper.update(deltaTime);
 		if (!isGameOver() &&isPlayerInWater()) {
 			lives--;
+			addHighScore(); //keep the current score
 			AudioManager.instance.play(Assets.instance.sounds.liveLost);
 		if (isGameOver())
 			timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
@@ -356,7 +387,7 @@ public class WorldController extends InputAdapter{
 		if (scoreVisual< score)
 			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
 	}
-	
+
 	/**
 	 * Keyboard input
 	 * Space - next sprite

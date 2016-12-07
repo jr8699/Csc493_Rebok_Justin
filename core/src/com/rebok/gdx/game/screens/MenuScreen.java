@@ -20,12 +20,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.rebok.gdx.game.Assets;
 import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.CharacterSkin;
 import com.rebok.gdx.game.util.Constants;
 import com.rebok.gdx.game.util.GamePreferences;
+import com.rebok.gdx.game.util.Highscores;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /**
@@ -45,11 +47,13 @@ public class MenuScreen extends AbstractGameScreen {
 	private Image imgBunny;
 	private Button btnMenuPlay;
 	private Button btnMenuOptions;
-	
+
 	//highscore stuff
 	private Button highScores;
 	private boolean highScoreSelected = false;
 	private Window highScoresWindow;
+	private Array<String> scoresArray;
+
 	// options
 	private Window winOptions;
 	private TextButton btnWinOptSave;
@@ -66,12 +70,12 @@ public class MenuScreen extends AbstractGameScreen {
 	private boolean debugEnabled = false;
 	private float debugRebuildStage;
 	private Skin skinLibgdx;
-	
+
 	//Constructor
 	public MenuScreen (Game game) {
 	    super(game);
 	}
-	
+
 	/**
 	 * Render the MenuScreen
 	 */
@@ -90,7 +94,7 @@ public class MenuScreen extends AbstractGameScreen {
 	    stage.draw();
 	    stage.setDebugAll(false); //changed from the book
 	}
-	
+
 	/**
 	 * Our load settings for this screen
 	 */
@@ -105,7 +109,7 @@ public class MenuScreen extends AbstractGameScreen {
 		onCharSkinSelected(prefs.charSkin);
 		chkShowFpsCounter.setChecked(prefs.showFpsCounter);
 	}
-	
+
 	/**
 	 * Our settings for saving the screen
 	 */
@@ -119,7 +123,7 @@ public class MenuScreen extends AbstractGameScreen {
 		  prefs.showFpsCounter = chkShowFpsCounter.isChecked();
 		  prefs.save();
 	}
-	
+
 	/**
 	 * When the charskin is selected
 	 * @param index
@@ -128,7 +132,7 @@ public class MenuScreen extends AbstractGameScreen {
 		CharacterSkin skin = CharacterSkin.values()[index];
 		imgCharSkin.setColor(skin.getColor());
 	}
-	
+
 	/**
 	 * When save is clicked
 	 */
@@ -137,7 +141,7 @@ public class MenuScreen extends AbstractGameScreen {
 		onCancelClicked();
 		AudioManager.instance.onSettingsUpdated();
 	}
-	
+
 	/**
 	 * When cancel is clicked
 	 */
@@ -147,7 +151,7 @@ public class MenuScreen extends AbstractGameScreen {
 		winOptions.setVisible(false);
 		AudioManager.instance.onSettingsUpdated();
 	}
-	
+
 	/**
 	 * Build win skin
 	 * @return
@@ -173,7 +177,7 @@ public class MenuScreen extends AbstractGameScreen {
 		tbl.add(imgCharSkin).width(50).height(50);
 		return tbl;
 	}
-	
+
 	/**
 	 * Build win debug
 	 * @return
@@ -193,7 +197,7 @@ public class MenuScreen extends AbstractGameScreen {
 		tbl.row();
 		return tbl;
 	}
-	
+
 	/**
 	 * Build the buttons
 	 * @return
@@ -218,27 +222,27 @@ public class MenuScreen extends AbstractGameScreen {
 		btnWinOptSave = new TextButton("Save", skinLibgdx);
 		tbl.add(btnWinOptSave).padRight(30);
 		btnWinOptSave.addListener(new ChangeListener() {
-			
+
 		@Override
 		public void changed (ChangeEvent event, Actor actor) {
 		    onSaveClicked();
 		}
-		  
+
 		});
 		// + Cancel Button with event handler
 		btnWinOptCancel = new TextButton("Cancel", skinLibgdx);
 		tbl.add(btnWinOptCancel);
 		btnWinOptCancel.addListener(new ChangeListener() {
-			
+
 		@Override
 		public void changed (ChangeEvent event, Actor actor) {
 		    onCancelClicked();
 		}
-		
+
 		});
 		return tbl;
 	}
-	
+
 	/**
 	 * Rebuild the stage
 	 */
@@ -264,14 +268,14 @@ public class MenuScreen extends AbstractGameScreen {
 		stage.addActor(layerOptionsWindow);
 		stage.addActor(layerHighScoreWindow);
 	}
-	
+
 	/**
 	 * Resize the window
 	 */
 	@Override public void resize (int width, int height) {
 		stage.getViewport().update(width, height, true);
 	}
-	
+
 	/**
 	 * Show the stage
 	 */
@@ -280,7 +284,7 @@ public class MenuScreen extends AbstractGameScreen {
 		Gdx.input.setInputProcessor(stage);
 		rebuildStage();
 	}
-	
+
 	/**
 	 * Hide the stage
 	 */
@@ -289,7 +293,7 @@ public class MenuScreen extends AbstractGameScreen {
 		skinCanyonBunny.dispose();
 		skinLibgdx.dispose();
 	}
-	
+
 	/**
 	 * Build w/ audio settings
 	 * @return
@@ -318,10 +322,10 @@ public class MenuScreen extends AbstractGameScreen {
 		tbl.row();
 		return tbl;
 	}
-	
+
 	//Android pause
 	@Override public void pause () { }
-	
+
 	/**
 	 * The background layer of our screen
 	 * @return
@@ -333,7 +337,7 @@ public class MenuScreen extends AbstractGameScreen {
 	    layer.add(imgBackground);
 	    return layer;
 	}
-	
+
 	/**
 	 * The objects layer of our screen
 	 * @return
@@ -346,12 +350,13 @@ public class MenuScreen extends AbstractGameScreen {
 	    imgBunny.setPosition(355, 40);
 	    return layer;
 	}
-	
+
 	/**
 	 * The logos layer of our screen
 	 * @return
 	 */
 	private Table buildLogosLayer () {
+		//GamePreferences prefs = GamePreferences.instance;
 		Table layer = new Table();
 		layer.left().top();
 		// + Game Logo
@@ -363,22 +368,38 @@ public class MenuScreen extends AbstractGameScreen {
 		layer.add(imgInfo).bottom();
 		if (debugEnabled) layer.debug();
 		return layer;
+		//chkShowFpsCounter.setChecked(prefs.showFpsCounter);
 	}
-	
+
 	/**
 	 * Build the layer to display the highscores
 	 */
-	private void buildScoresLayer(){
-		
+	private Table buildScoresLayer(){
+		Highscores scores = Highscores.instance;
+		scores.load();
+		scoresArray = scores.getScores();
+
+
+		Table layer = new Table();
+		layer.center().center();
+		layer.add(new Label("Current High Scores:", skinLibgdx, "default-font", Color.ORANGE)).colspan(8);
+
+		for(int i = 0;i<scores.getNumber();i++){
+			layer.row();
+			layer.add(new Label(scoresArray.get(i), skinLibgdx, "default-font", Color.ORANGE)).colspan(3);
+		}
+		return layer;
 	}
-	
+
 	/**
 	 * Load the highscores
 	 */
 	private void loadHighScore(){
-		
+		Highscores scores = Highscores.instance;
+		scores.load();
+		scoresArray = scores.getScores();
 	}
-	
+
 	/**
 	 * When the highscore button was pressed
 	 */
@@ -397,7 +418,7 @@ public class MenuScreen extends AbstractGameScreen {
 			highScoreSelected = false;
 		}
 	}
-	
+
 	/**
 	 * The control layer of the screen
 	 * @return
@@ -409,42 +430,42 @@ public class MenuScreen extends AbstractGameScreen {
 		btnMenuPlay = new Button(skinCanyonBunny, "play");
 		layer.add(btnMenuPlay);
 		btnMenuPlay.addListener(new ChangeListener() {
-			
+
 		@Override
 		public void changed (ChangeEvent event, Actor actor) {
 		    onPlayClicked();
 		}
 		});
-		
+
 		layer.row();
 		// + Options Button
 		btnMenuOptions = new Button(skinCanyonBunny, "options");
 		layer.add(btnMenuOptions);
 		btnMenuOptions.addListener(new ChangeListener() {
-			
+
 		@Override
 		public void changed (ChangeEvent event, Actor actor) {
 		    onOptionsClicked();
 		}
 		});
-		
+
 		layer.row();
 		// + Highscores Button
 		highScores = new Button(skinCanyonBunny, "highscores");
 		layer.add(highScores);
 		highScores.addListener(new ChangeListener() {
-			
+
 		@Override
 		public void changed (ChangeEvent event, Actor actor) {
 		    onHighScoreClicked();
 		}
 		});
-		
-		
+
+
 		if (debugEnabled) layer.debug();
 		return layer;
 	}
-	
+
 	/**
 	 * Build the window layer
 	 * @return
@@ -470,31 +491,32 @@ public class MenuScreen extends AbstractGameScreen {
 		winOptions.setPosition(Constants.VIEWPORT_GUI_WIDTH - winOptions.getWidth() - 50, 50);
 		return winOptions;
 	}
-	
+
 	/**
 	 * Build the window layer
 	 * @return
 	 */
 	private Table buildHighScoreWindowLayer () {
-		highScoresWindow = new Window("HighScores", skinLibgdx);
+		highScoresWindow = new Window("High Score Window", skinLibgdx);
 		// Make options window slightly transparent
+		highScoresWindow.add(buildScoresLayer()).row();
 		highScoresWindow.setColor(1, 1, 1, 0.8f);
 		// Hide options window by default
 		highScoresWindow.setVisible(false);
 		// Let TableLayout recalculate widget sizes and positions
 		highScoresWindow.pack();
 		// Move options window to bottom right corner
-		highScoresWindow.setPosition(Constants.VIEWPORT_GUI_WIDTH - winOptions.getWidth() - 50, 50); //center bottom
+		highScoresWindow.setPosition(Constants.VIEWPORT_GUI_WIDTH - highScoresWindow.getWidth() - 50, 50); //center bottom
 		return highScoresWindow;
 	}
-	
+
 	/**
 	 * When play is clicked
 	 */
 	private void onPlayClicked () {
 		game.setScreen(new GameScreen(game));
 	}
-	
+
 	/**
 	 * When options is clicked
 	 */

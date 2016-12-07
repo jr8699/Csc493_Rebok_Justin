@@ -16,13 +16,60 @@ public class Highscores {
 	//All the various options
 	public Array<String> highscores; //the highscores
 	public int numHighscores; //the number of high scores stored
+	public int currentScore; //for when the player is still alive, prevent reset after each life
 	private Preferences prefs;
-	
+
 	// singleton: prevent instantiation from other classes
 	private Highscores () {
 		prefs = Gdx.app.getPreferences(Constants.HIGHSCORES);
+		currentScore = 0;
 	}
-	
+
+	/**
+	 * Utility to clean out the highscores
+	 */
+	public void clearHighScores(){
+		load();
+		for(int i = 0;i<numHighscores;i++){
+			highscores.removeIndex(i);
+		}
+		numHighscores = 0;
+		save();
+	}
+	/**
+	 * Get all the high scores
+	 * @return
+	 */
+	public Array<String> getScores(){
+		if(highscores != null)
+			return highscores;
+		else return null;
+	}
+
+	/**
+	 * Get the number of highscores
+	 * @return
+	 */
+	public int getNumber(){
+		return numHighscores;
+	}
+
+	/**
+	 * Add a highscore to the list
+	 * @param s
+	 */
+	public void addElement(String s){
+		highscores.add(s);
+	}
+
+	/**
+	 * Set new number of highscores
+	 * @param num
+	 */
+	public void setNumber(int num){
+		numHighscores = num;
+	}
+
 	/**
 	 * Load our highscores
 	 */
@@ -33,7 +80,7 @@ public class Highscores {
 			highscores.add(prefs.getString("score" + i));
 		}
 	}
-	
+
 	/**
 	 * Save our highscores
 	 */

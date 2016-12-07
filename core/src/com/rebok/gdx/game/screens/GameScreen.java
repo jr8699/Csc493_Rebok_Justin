@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.rebok.gdx.game.WorldController;
 import com.rebok.gdx.game.WorldRenderer;
 import com.rebok.gdx.game.util.GamePreferences;
+import com.rebok.gdx.game.util.Highscores;
 
 /**
  * The game screen when playing
@@ -17,12 +18,13 @@ public class GameScreen extends AbstractGameScreen {
 	private WorldController worldController; //the world controller
 	private WorldRenderer worldRenderer; //the world renderer
 	private boolean paused; //if paused
-	
+	public Highscores scores = Highscores.instance;
+
 	//Constructor
 	public GameScreen (Game game) {
 	    super(game);
 	}
-	
+
 	/**
 	 * Render the Game screen
 	 */
@@ -41,7 +43,7 @@ public class GameScreen extends AbstractGameScreen {
 	    // Render game world to screen
 	    worldRenderer.render();
 	}
-	
+
 	/**
 	 * resize the window
 	 */
@@ -49,7 +51,7 @@ public class GameScreen extends AbstractGameScreen {
 	public void resize (int width, int height) {
 	    worldRenderer.resize(width, height);
 	}
-	
+
 	/**
 	 * Shows the screen
 	 */
@@ -60,7 +62,7 @@ public class GameScreen extends AbstractGameScreen {
 	    worldRenderer = new WorldRenderer(worldController);
 	    Gdx.input.setCatchBackKey(true);
 	}
-	
+
 	/**
 	 * Hide the screen
 	 */
@@ -69,13 +71,13 @@ public class GameScreen extends AbstractGameScreen {
 		    worldRenderer.dispose();
 		    Gdx.input.setCatchBackKey(false);
 	}
-	
+
 	//android pause
 	@Override
 	public void pause () {
 		paused = true;
 	}
-	
+
 	//android resume
 	@Override
 	public void resume () {
