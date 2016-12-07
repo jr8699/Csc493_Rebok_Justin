@@ -7,6 +7,10 @@
 		options:{
 		down: options-dn,
 		up: options-up
+			},
+		highscores:{
+		down: highscores-dn,
+		up: highscores-up
 		}
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Image:{

@@ -366,6 +366,13 @@ public class MenuScreen extends AbstractGameScreen {
 	}
 	
 	/**
+	 * Build the layer to display the highscores
+	 */
+	private void buildScoresLayer(){
+		
+	}
+	
+	/**
 	 * Load the highscores
 	 */
 	private void loadHighScore(){
@@ -380,10 +387,14 @@ public class MenuScreen extends AbstractGameScreen {
 			loadHighScore();
 			btnMenuPlay.setVisible(false);
 			btnMenuOptions.setVisible(false);
-			//winOptions.setVisible(true);
+			//highScores.setVisible(false);
+			highScoresWindow.setVisible(true);
+			highScoreSelected = true;
 		}else{
 			btnMenuPlay.setVisible(true);
 			btnMenuOptions.setVisible(true);
+			highScoresWindow.setVisible(false);
+			highScoreSelected = false;
 		}
 	}
 	
@@ -417,7 +428,7 @@ public class MenuScreen extends AbstractGameScreen {
 		}
 		});
 		
-		layer.bottom();
+		layer.row();
 		// + Highscores Button
 		highScores = new Button(skinCanyonBunny, "highscores");
 		layer.add(highScores);
@@ -473,7 +484,7 @@ public class MenuScreen extends AbstractGameScreen {
 		// Let TableLayout recalculate widget sizes and positions
 		highScoresWindow.pack();
 		// Move options window to bottom right corner
-		highScoresWindow.setPosition(Constants.VIEWPORT_GUI_WIDTH / 2, 50); //center bottom
+		highScoresWindow.setPosition(Constants.VIEWPORT_GUI_WIDTH - winOptions.getWidth() - 50, 50); //center bottom
 		return highScoresWindow;
 	}
 	
