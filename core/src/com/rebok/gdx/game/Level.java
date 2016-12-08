@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.Clouds;
+import com.rebok.gdx.game.objects.Goal;
 import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.IceBlock;
 import com.rebok.gdx.game.objects.LavaBlock;
@@ -21,38 +22,40 @@ import com.rebok.gdx.game.objects.WaterPlayer;
  */
 public class Level {
 	public static final String TAG = Level.class.getName(); //libGDX tag
-	
+
 	public WaterPlayer waterPlayer; //the player
 	public Array<GoldCoin> goldcoins; //all the coins on the level
 	public Array<LavaBlock> lavaBlocks; //all the lava blocks on the level
 	public Array<IceBlock> iceBlocks; //all the lava blocks on the level
-	
+	public Goal goal; //the goal object
+
 	public enum BLOCK_TYPE { //Block type enumerable, All data for the level
 	    EMPTY(0, 0, 0), // black
 	    ROCK(88, 255, 42), // green
 	    PLAYER_SPAWNPOINT(255, 255, 255), // white
 	    ITEM_LAVA_BLOCK(255, 17, 17), // RED
 	    ITEM_ICE_BLOCK(0, 255, 240), // BLUE/cyan
-	    ITEM_GOLD_COIN(246, 255, 0); // yellow
+	    ITEM_GOLD_COIN(246, 255, 0), // yellow
+		GOAL(255,0,255); //pink
 	private int color;
-	
+
 	private BLOCK_TYPE (int r, int g, int b) {
 		color = r << 24 | g << 16 | b << 8 | 0xff;
 	}
-	
+
 	public boolean sameColor (int color) {
 		return this.color == color;
 	}
-	
+
 	public int getColor () {
 	    return color;
 	}
-	
+
 	}
-	
+
 	// objects
 	public Array<Rock> rocks;
-	
+
 	// decoration
 	public Clouds clouds;
 	public Mountains mountains;
@@ -60,7 +63,7 @@ public class Level {
 	public Level (String filename) {
 		init(filename);
 	}
-	
+
 	/**
 	 * Reads our level file
 	 * @param filename
@@ -68,6 +71,7 @@ public class Level {
 	private void init (String filename) {
 		// player character
 		waterPlayer = null;
+		goal = null;
 		// objects
 	    rocks = new Array<Rock>();
 	    goldcoins = new Array<GoldCoin>();
@@ -132,6 +136,12 @@ public class Level {
 	    		        obj.position.set(pixelX,baseHeight * obj.dimension.y + offsetHeight);
 	    		        goldcoins.add((GoldCoin)obj);
 	    			}
+	    			else if (BLOCK_TYPE.GOAL.sameColor(currentPixel)) {
+	    		        obj = new Goal();
+	    		        offsetHeight = -1.5f;
+	    		        obj.position.set(pixelX,baseHeight * obj.dimension.y + offsetHeight);
+	    		        goal = (Goal)obj;
+	    			}
 	    			// unknown object/pixel color
 	    			else {
 	    				int r = 0xff & (currentPixel >>> 24); //red color channel
@@ -143,7 +153,7 @@ public class Level {
 	        lastPixel = currentPixel;
 	    	}
 	    }
-	    
+
 	    // decoration
 	    clouds = new Clouds(pixmap.getWidth());
 	    clouds.position.set(0, 2);
@@ -151,13 +161,13 @@ public class Level {
 	    mountains.position.set(-1, -1);
 	    lavaOverlay = new LavaOverlay(pixmap.getWidth());
 	    lavaOverlay.position.set(0, -3.75f);
-	    
+
 	    // free memory
 	    pixmap.dispose();
 	    Gdx.app.debug(TAG, "level '" + filename + "' loaded");
-		
+
 	}
-	
+
 	/**
 	 * Render game objects like mountains, rocks, etc.
 	 * @param batch
@@ -175,9 +185,10 @@ public class Level {
 	    // Draw lavaBlocks
 	    for (LavaBlock lava : lavaBlocks)
 	    	if(!lava.toRemove) lava.render(batch);
-	    // Draw lavaBlocks
+	    // Draw ice blocks
 	    for (IceBlock ice : iceBlocks)
 	    	if(!ice.toRemove) ice.render(batch);
+	    goal.render(batch);
 	    // Draw Player Character
 	    waterPlayer.render(batch);
 	    // Draw Water Overlay
@@ -185,13 +196,14 @@ public class Level {
 	    // Draw Clouds
 	    clouds.render(batch);
 	}
-	
+
 	/**
 	 * Update all the objects on the level
 	 * @param deltaTime
 	 */
 	public void update (float deltaTime) {
 		waterPlayer.update(deltaTime);
+		goal.update(deltaTime);
 		for(Rock rock : rocks)
 		    rock.update(deltaTime);
 		for(GoldCoin goldCoin : goldcoins)

@@ -81,6 +81,13 @@ default
   orig: 256, 128
   offset: 0, 0
   index: -1
+goal
+  rotate: false
+  xy: 516, 250
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 ground
   rotate: false
   xy: 2, 252
@@ -100,13 +107,6 @@ lava_block
   xy: 904, 539
   size: 59, 62
   orig: 59, 62
-  offset: 0, 0
-  index: -1
-lava_dangerous
-  rotate: false
-  xy: 516, 250
-  size: 256, 256
-  orig: 256, 256
   offset: 0, 0
   index: -1
 mountain_big
@@ -142,5 +142,18 @@ wave_end_wave
   xy: 215, 56
   size: 128, 64
   orig: 128, 64
+  offset: 0, 0
+  index: -1
+
+rebok-mygame2.png
+size: 512,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+lava_dangerous
+  rotate: false
+  xy: 2, 2
+  size: 256, 256
+  orig: 256, 256
   offset: 0, 0
   index: -1

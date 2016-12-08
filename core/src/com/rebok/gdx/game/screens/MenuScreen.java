@@ -514,7 +514,10 @@ public class MenuScreen extends AbstractGameScreen {
 	 * When play is clicked
 	 */
 	private void onPlayClicked () {
-		game.setScreen(new GameScreen(game));
+		String currentLevel = Constants.LEVEL_01;
+		GameScreen tmp = new GameScreen(game);
+		tmp.currentLevel = currentLevel;
+		game.setScreen(tmp);
 	}
 
 	/**

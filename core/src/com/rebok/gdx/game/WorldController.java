@@ -26,11 +26,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.rebok.gdx.game.objects.AbstractGameObject;
+import com.rebok.gdx.game.objects.Goal;
 import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.IceBlock;
 import com.rebok.gdx.game.objects.LavaBlock;
 import com.rebok.gdx.game.objects.Rock;
 import com.rebok.gdx.game.objects.WaterPlayer;
+import com.rebok.gdx.game.screens.GameScreen;
 import com.rebok.gdx.game.screens.MenuScreen;
 import com.rebok.gdx.game.util.AudioManager;
 import com.rebok.gdx.game.util.CameraHelper;
@@ -53,8 +55,6 @@ public class WorldController extends InputAdapter{
 	public float scoreVisual; //visual score
 
 	// Rectangles for collision detection
-	private Rectangle r1 = new Rectangle();
-	private Rectangle r2 = new Rectangle();
 	private float timeLeftGameOverDelay; //level time left
 
 	public Array<Body> objectsToRemove; //for box2d physics
@@ -69,10 +69,12 @@ public class WorldController extends InputAdapter{
 
 	private boolean enteredScore;
 
+	private String currentLevel; //this is the beginning level
+
 	//Constructor
-	public WorldController(Game game) {
+	public WorldController(Game game, String level) {
 		this.game = game;
-		init();
+		init(level);
 	}
 
 
@@ -80,7 +82,7 @@ public class WorldController extends InputAdapter{
 	private void initLevel(){
 		score = Highscores.instance.currentScore;
 		scoreVisual = score;
-		level = new Level(Constants.LEVEL_01);
+		level = new Level(currentLevel);
 		cameraHelper.setTarget(level.waterPlayer);
 		initPhysics();
 	}
@@ -88,7 +90,8 @@ public class WorldController extends InputAdapter{
 	/**
 	 * Constructor code
 	 */
-	private void init() {
+	private void init(String level) {
+		currentLevel = level;
 		enteredScore = false;
 		objectsToRemove = new Array<Body>();
 		cameraHelper = new CameraHelper();
@@ -128,6 +131,26 @@ public class WorldController extends InputAdapter{
 			body.createFixture(fixtureDef);
 			polygonShape.dispose();
 		}
+
+		//our goal object
+		Goal goal = level.goal;
+		BodyDef bodyDefgoal = new BodyDef();
+		bodyDefgoal.position.set(goal.position);
+		bodyDefgoal.type = BodyType.StaticBody;
+		Body bodygoal = myWorld.createBody(bodyDefgoal);
+		bodygoal.setUserData(goal);
+		goal.body = bodygoal;
+		PolygonShape polygonShapegoal = new PolygonShape();
+		origin.x = goal.bounds.width / 2.0f;
+		origin.y = goal.bounds.height / 2.0f;
+		polygonShapegoal.setAsBox(goal.bounds.width / 2.0f, (goal.bounds.height-0.04f) / 2.0f, origin, 0);
+		FixtureDef fixtureDefgoal = new FixtureDef(); //make the coins a sensor
+		fixtureDefgoal.isSensor = true;
+		fixtureDefgoal.filter.categoryBits = coinMask; //use coin mask
+		fixtureDefgoal.filter.maskBits = playerMask;
+		fixtureDefgoal.shape = polygonShapegoal;
+		bodygoal.createFixture(fixtureDefgoal);
+		polygonShapegoal.dispose();
 
 		for (GoldCoin coin : level.goldcoins)
 		{
@@ -248,7 +271,14 @@ public class WorldController extends InputAdapter{
 	 */
 	public void addHighScore(){
 		if(lives >= 0){ //keep playing the game
-			if(Highscores.instance.currentScore < score){
+			if(level.goal.collected){ //no more levels
+				HighScoreHelper listener = new HighScoreHelper();
+				Gdx.input.getTextInput(listener, "High Scores", "Enter your name", "");
+				enteredScore = true;
+				backToMenu();
+
+			}
+			if(Highscores.instance.currentScore < score){ //keep going
 				Highscores.instance.currentScore = score;
 			}
 		}else{//bring up to prompt to enter a name
@@ -340,11 +370,29 @@ public class WorldController extends InputAdapter{
 	}
 
 	/**
+	 * When the player wins a level
+	 */
+	private void loadNewLevel(){
+		if(currentLevel == Constants.LEVEL_01)
+			currentLevel = Constants.LEVEL_02;
+		else{ //end of levels
+			addHighScore();
+		}
+		GameScreen tmp = new GameScreen(game);
+		tmp.currentLevel = currentLevel;
+		game.setScreen(tmp);
+	}
+
+	/**
 	 * Frame update, update our test sprites and the camera
 	 * @param deltaTime
 	 */
 	public void update(float deltaTime) {
 		handleDebugInput(deltaTime);
+		if(level.goal.collected){ //switch levels
+			loadNewLevel();
+		}
+
 		if (isGameOver()) {
 		timeLeftGameOverDelay -= deltaTime;
 		if (timeLeftGameOverDelay< 0)
@@ -397,7 +445,7 @@ public class WorldController extends InputAdapter{
 	public boolean keyUp (int keycode) {
 	      // Reset game world
 	    if (keycode == Keys.R) {
-	    	init();
+	    	init(currentLevel);
 	    	Gdx.app.debug(TAG, "Game world resetted");
 	    }
 	    // Back to Menu

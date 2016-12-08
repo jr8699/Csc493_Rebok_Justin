@@ -19,6 +19,7 @@ public class GameScreen extends AbstractGameScreen {
 	private WorldRenderer worldRenderer; //the world renderer
 	private boolean paused; //if paused
 	public Highscores scores = Highscores.instance;
+	public String currentLevel;
 
 	//Constructor
 	public GameScreen (Game game) {
@@ -58,7 +59,7 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public void show () {
 		GamePreferences.instance.load();
-	    worldController = new WorldController(game);
+	    worldController = new WorldController(game,currentLevel);
 	    worldRenderer = new WorldRenderer(worldController);
 	    Gdx.input.setCatchBackKey(true);
 	}
