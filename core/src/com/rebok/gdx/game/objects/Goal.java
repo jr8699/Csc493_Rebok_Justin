@@ -27,7 +27,7 @@ public class Goal extends AbstractGameObject{
 	    dimension.set(0.5f, 0.5f);
 
 	    stateTime = MathUtils.random(0.0f, 1.0f);
-
+	    regGoal = Assets.instance.goal.goalAsset;
 	    // Set bounding box for collision detection
 	    bounds.set(0, 0, dimension.x, dimension.y);
 	    collected = false;

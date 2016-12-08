@@ -70,6 +70,7 @@ public class WorldController extends InputAdapter{
 	private boolean enteredScore;
 
 	private String currentLevel; //this is the beginning level
+	private boolean switchLevel;
 
 	//Constructor
 	public WorldController(Game game, String level) {
@@ -91,6 +92,7 @@ public class WorldController extends InputAdapter{
 	 * Constructor code
 	 */
 	private void init(String level) {
+		switchLevel = false;
 		currentLevel = level;
 		enteredScore = false;
 		objectsToRemove = new Array<Body>();
@@ -254,7 +256,9 @@ public class WorldController extends InputAdapter{
 	 * @return
 	 */
 	public boolean isGameOver () {
-		return lives < 0;
+		if(level.goal.collected) return true;
+		if(lives < 0) return true;
+		return false;
 	}
 
 	/**
@@ -271,11 +275,11 @@ public class WorldController extends InputAdapter{
 	 */
 	public void addHighScore(){
 		if(lives >= 0){ //keep playing the game
-			if(level.goal.collected){ //no more levels
+			if(level.goal.collected && !enteredScore){ //no more levels
 				HighScoreHelper listener = new HighScoreHelper();
 				Gdx.input.getTextInput(listener, "High Scores", "Enter your name", "");
 				enteredScore = true;
-				backToMenu();
+				//backToMenu();
 
 			}
 			if(Highscores.instance.currentScore < score){ //keep going
@@ -296,7 +300,7 @@ public class WorldController extends InputAdapter{
 	 */
 	private void backToMenu () {
 		// switch to menu screen
-		addHighScore();
+		//addHighScore();
 		game.setScreen(new MenuScreen(game));
 	}
 
@@ -370,28 +374,11 @@ public class WorldController extends InputAdapter{
 	}
 
 	/**
-	 * When the player wins a level
-	 */
-	private void loadNewLevel(){
-		if(currentLevel == Constants.LEVEL_01)
-			currentLevel = Constants.LEVEL_02;
-		else{ //end of levels
-			addHighScore();
-		}
-		GameScreen tmp = new GameScreen(game);
-		tmp.currentLevel = currentLevel;
-		game.setScreen(tmp);
-	}
-
-	/**
 	 * Frame update, update our test sprites and the camera
 	 * @param deltaTime
 	 */
 	public void update(float deltaTime) {
 		handleDebugInput(deltaTime);
-		if(level.goal.collected){ //switch levels
-			loadNewLevel();
-		}
 
 		if (isGameOver()) {
 		timeLeftGameOverDelay -= deltaTime;
@@ -420,7 +407,15 @@ public class WorldController extends InputAdapter{
 			}
 		}
 		cameraHelper.update(deltaTime);
-		if (!isGameOver() &&isPlayerInWater()) {
+		if(level.goal.collected){ //switch levels
+			if(currentLevel == Constants.LEVEL_01){
+				currentLevel = Constants.LEVEL_02;
+				initLevel();
+			}else{ //end of levels
+				addHighScore();
+			}
+		}
+		if (!isGameOver() && isPlayerInWater()) {
 			lives--;
 			addHighScore(); //keep the current score
 			AudioManager.instance.play(Assets.instance.sounds.liveLost);
