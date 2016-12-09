@@ -51,9 +51,11 @@ public class WorldRenderer implements Disposable{
 	 * Used to render stuff, only the world and gui at this moment
 	 */
 	public void render () {
+		if(!worldController.isGameOver()){
 		if(!worldController.isGoalCollected()){ //dont render when the menu screen is up
 		renderWorld(batch);
 		renderGui(batch);
+		}
 		}
 	}
 	
