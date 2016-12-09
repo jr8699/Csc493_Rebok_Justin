@@ -1,22 +1,10 @@
 package com.rebok.gdx.game;
 
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,7 +13,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.rebok.gdx.game.objects.AbstractGameObject;
 import com.rebok.gdx.game.objects.Goal;
 import com.rebok.gdx.game.objects.GoldCoin;
 import com.rebok.gdx.game.objects.IceBlock;
@@ -65,12 +52,10 @@ public class WorldController extends InputAdapter{
 	//for the sensors
 	private short coinMask = 0x001;
 	private short playerMask = 0x002;
-	private short lavaMask = 0x003;
 
 	private boolean enteredScore;
 
 	private String currentLevel; //this is the beginning level
-	private boolean switchLevel;
 
 	//Constructor
 	public WorldController(Game game, String level) {
@@ -92,7 +77,7 @@ public class WorldController extends InputAdapter{
 	 * Constructor code
 	 */
 	private void init(String level) {
-		switchLevel = false;
+		Highscores.instance.currentScore = 0;
 		currentLevel = level;
 		enteredScore = false;
 		objectsToRemove = new Array<Body>();
@@ -256,11 +241,18 @@ public class WorldController extends InputAdapter{
 	 * @return
 	 */
 	public boolean isGameOver () {
-		if(level.goal.collected) return true;
 		if(lives < 0) return true;
 		return false;
 	}
 
+	/**
+	 * Has the player collected the goal?
+	 * @return
+	 */
+	public boolean isGoalCollected(){
+		if(level.goal.collected) return true;
+		else return false;
+	}
 	/**
 	 * Find out if the player hit the water
 	 * @return
@@ -300,7 +292,8 @@ public class WorldController extends InputAdapter{
 	 */
 	private void backToMenu () {
 		// switch to menu screen
-		//addHighScore();
+		addHighScore();
+		//myWorld.dispose();
 		game.setScreen(new MenuScreen(game));
 	}
 
@@ -379,7 +372,19 @@ public class WorldController extends InputAdapter{
 	 */
 	public void update(float deltaTime) {
 		handleDebugInput(deltaTime);
-
+		
+		if(isGoalCollected()){ //switch levels
+			if(currentLevel == Constants.LEVEL_01){
+				if(Highscores.instance.currentScore < score){
+					Highscores.instance.currentScore = score;
+				}
+				currentLevel = Constants.LEVEL_02;
+				initLevel();
+			}else{ //end of levels
+				backToMenu();
+			}
+		}
+		
 		if (isGameOver()) {
 		timeLeftGameOverDelay -= deltaTime;
 		if (timeLeftGameOverDelay< 0)
@@ -407,17 +412,11 @@ public class WorldController extends InputAdapter{
 			}
 		}
 		cameraHelper.update(deltaTime);
-		if(level.goal.collected){ //switch levels
-			if(currentLevel == Constants.LEVEL_01){
-				currentLevel = Constants.LEVEL_02;
-				initLevel();
-			}else{ //end of levels
-				addHighScore();
-			}
-		}
 		if (!isGameOver() && isPlayerInWater()) {
 			lives--;
-			addHighScore(); //keep the current score
+			if(Highscores.instance.currentScore < score){ //update the highscores score
+				Highscores.instance.currentScore = score;
+			}
 			AudioManager.instance.play(Assets.instance.sounds.liveLost);
 		if (isGameOver())
 			timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;

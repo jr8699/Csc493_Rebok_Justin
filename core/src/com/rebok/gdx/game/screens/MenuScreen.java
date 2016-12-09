@@ -406,6 +406,7 @@ public class MenuScreen extends AbstractGameScreen {
 	public void onHighScoreClicked(){
 		if(!highScoreSelected){
 			loadHighScore();
+			rebuildStage(); //load new highscores in
 			btnMenuPlay.setVisible(false);
 			btnMenuOptions.setVisible(false);
 			//highScores.setVisible(false);
@@ -416,6 +417,7 @@ public class MenuScreen extends AbstractGameScreen {
 			btnMenuOptions.setVisible(true);
 			highScoresWindow.setVisible(false);
 			highScoreSelected = false;
+			//rebuildStage(); //load new highscores in
 		}
 	}
 

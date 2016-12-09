@@ -24,18 +24,6 @@ public class Highscores {
 		prefs = Gdx.app.getPreferences(Constants.HIGHSCORES);
 		currentScore = 0;
 	}
-
-	/**
-	 * Utility to clean out the highscores
-	 */
-	public void clearHighScores(){
-		load();
-		for(int i = 0;i<numHighscores;i++){
-			highscores.removeIndex(i);
-		}
-		numHighscores = 0;
-		save();
-	}
 	/**
 	 * Get all the high scores
 	 * @return
@@ -85,6 +73,7 @@ public class Highscores {
 	 * Save our highscores
 	 */
 	public void save () {
+		//load(); //load to pick the highest 3
 		prefs.putInteger("number", numHighscores);
 		for(int i=0;i<numHighscores;i++){
 			prefs.putString("score" + i, highscores.get(i));
