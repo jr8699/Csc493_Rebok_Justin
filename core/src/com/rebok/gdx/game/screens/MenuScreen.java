@@ -381,11 +381,12 @@ public class MenuScreen extends AbstractGameScreen {
 
 
 		Table layer = new Table();
-		layer.center().center();
+		layer.center();
+		layer.padLeft(2.0f);
 		layer.add(new Label("Current High Scores:", skinLibgdx, "default-font", Color.ORANGE)).colspan(8);
 
 		for(int i = 0;i<scores.getNumber();i++){
-			layer.row();
+			layer.row().padLeft(60.0f);
 			layer.add(new Label(scoresArray.get(i), skinLibgdx, "default-font", Color.ORANGE)).colspan(3);
 		}
 		return layer;

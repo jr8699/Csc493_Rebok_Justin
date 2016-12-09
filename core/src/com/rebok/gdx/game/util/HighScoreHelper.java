@@ -13,7 +13,7 @@ public class HighScoreHelper implements TextInputListener{
 	public void input(String text) {
 		Highscores scores = Highscores.instance;
 		int num = scores.getNumber();
-		scores.setNumber(num + 1); //add new info
+		 //add new info
 		int score = scores.currentScore;
 		scores.addElement(text + " - " + score);
 		scores.save(); //save it

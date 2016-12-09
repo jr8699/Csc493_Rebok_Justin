@@ -43,10 +43,46 @@ public class Highscores {
 	}
 
 	/**
+	 * Parse the score from the highscore string
+	 * @param s
+	 * @return
+	 */
+	private int parseScore(String s){
+		int i = 0;
+		while(s.charAt(i) != '-') i++;
+		i+=2;
+		String subString = "";
+		while(i < s.length()) subString = subString + s.charAt(i++);
+		System.out.println(subString);
+		System.out.println(Integer.parseInt(subString));
+		return Integer.parseInt(subString);
+	}
+	/**
+	 * Moves the highscores down
+	 * @param i
+	 */
+	private void moveScores(int i){
+		for(int j = numHighscores-1; j > i; j--){ //pull up the list
+			highscores.insert(j+1,highscores.get(j));
+		}
+	}
+	
+	/**
 	 * Add a highscore to the list
 	 * @param s
 	 */
 	public void addElement(String s){
+		for(int i= 0;i< numHighscores;i++){
+			if(parseScore(highscores.get(i)) <= parseScore(s)){
+				System.out.println(s);
+				System.out.println(highscores.get(0));
+				moveScores(i);
+				highscores.insert(i,s);
+				setNumber(numHighscores + 1);
+				return;
+			}
+		}
+		setNumber(numHighscores + 1);
 		highscores.add(s);
 	}
 
