@@ -1,5 +1,6 @@
 package com.rebok.gdx.game;
 
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -195,12 +196,14 @@ public class CollisionHandler implements ContactListener {
     		((GoldCoin)block.getUserData()).toRemove = true; //for removal
     		world.flagForRemoval(block);
     	}else if (objFixture.getBody().getUserData() instanceof LavaBlock){
+    		AudioManager.instance.play(Assets.instance.sounds.pickupLava);
     		WaterPlayer p = (WaterPlayer)playerFixture.getBody().getUserData();
     		p.setLavaPowerup(true);
     		Body block = objFixture.getBody();
     		((LavaBlock)block.getUserData()).toRemove = true; //for removal
     		world.flagForRemoval(block);
     	}else if (objFixture.getBody().getUserData() instanceof IceBlock){
+    		AudioManager.instance.play(Assets.instance.sounds.pickupLava);//same sound for ice
     		WaterPlayer p = (WaterPlayer)playerFixture.getBody().getUserData();
     		p.setIcePowerup(true);
     		Body block = objFixture.getBody();

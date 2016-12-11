@@ -6,46 +6,88 @@ filter: Nearest,Nearest
 repeat: none
 anim_goldCoin
   rotate: false
-  xy: 774, 309
+  xy: 215, 22
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 1
 item_goldCoin
   rotate: false
-  xy: 774, 309
+  xy: 215, 22
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 anim_goldCoin
   rotate: false
-  xy: 215, 22
+  xy: 679, 128
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 2
 anim_goldCoin
   rotate: false
-  xy: 345, 88
+  xy: 857, 309
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 3
 anim_goldCoin
   rotate: false
-  xy: 679, 134
+  xy: 904, 405
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 4
 anim_goldCoin
   rotate: false
-  xy: 904, 505
+  xy: 249, 22
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: 6
+anim_lavablock
+  rotate: false
+  xy: 679, 162
+  size: 87, 86
+  orig: 87, 86
+  offset: 0, 0
+  index: 3
+anim_lavablock
+  rotate: false
+  xy: 774, 261
+  size: 81, 80
+  orig: 81, 80
+  offset: 0, 0
+  index: 4
+anim_lavablock
+  rotate: false
+  xy: 904, 521
+  size: 79, 80
+  orig: 79, 80
+  offset: 0, 0
+  index: 2
+anim_lavablock
+  rotate: false
+  xy: 345, 58
+  size: 59, 62
+  orig: 59, 62
+  offset: 0, 0
+  index: 1
+anim_lavablock
+  rotate: false
+  xy: 345, 58
+  size: 59, 62
+  orig: 59, 62
+  offset: 0, 0
+  index: 5
+item_lava_block
+  rotate: false
+  xy: 345, 58
+  size: 59, 62
+  orig: 59, 62
+  offset: 0, 0
+  index: -1
 arial-15
   rotate: false
   xy: 2, 122
@@ -97,16 +139,9 @@ ground
   index: -1
 ice_block
   rotate: false
-  xy: 679, 168
+  xy: 904, 439
   size: 80, 80
   orig: 80, 80
-  offset: 0, 0
-  index: -1
-lava_block
-  rotate: false
-  xy: 904, 539
-  size: 59, 62
-  orig: 59, 62
   offset: 0, 0
   index: -1
 mountain_big

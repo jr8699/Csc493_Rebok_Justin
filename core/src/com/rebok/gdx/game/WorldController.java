@@ -2,6 +2,7 @@ package com.rebok.gdx.game;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -56,6 +57,8 @@ public class WorldController extends InputAdapter{
 	private boolean enteredScore;
 
 	private String currentLevel; //this is the beginning level
+	
+	public ParticleEffect lavaParticle; //take a particle so it does not get destroyed
 
 	//Constructor
 	public WorldController(Game game, String level) {
@@ -372,7 +375,8 @@ public class WorldController extends InputAdapter{
 	 */
 	public void update(float deltaTime) {
 		handleDebugInput(deltaTime);
-		
+		if(lavaParticle != null)
+			lavaParticle.update(deltaTime);
 		if(isGoalCollected()){ //switch levels
 			if(currentLevel == Constants.LEVEL_01){
 				if(Highscores.instance.currentScore < score){

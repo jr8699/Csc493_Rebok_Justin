@@ -127,6 +127,7 @@ public class Level {
 	    				obj = new LavaBlock();
 	    		        offsetHeight = -1.5f;
 	    		        obj.position.set(pixelX,baseHeight * obj.dimension.y + offsetHeight);
+	    		        ((LavaBlock)obj).fireParticles.setPosition(((LavaBlock)obj).position.x + 0.25f,((LavaBlock)obj).position.y + 0.25f); //set particle position
 	    		        lavaBlocks.add((LavaBlock)obj);
 	    			}
 	    			// gold coin

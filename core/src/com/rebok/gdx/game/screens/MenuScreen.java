@@ -70,10 +70,18 @@ public class MenuScreen extends AbstractGameScreen {
 	private boolean debugEnabled = false;
 	private float debugRebuildStage;
 	private Skin skinLibgdx;
-
+	
+	/**
+	 * Play the menu song
+	 */
+	private void init(){
+		AudioManager.instance.play(Assets.instance.music.song01);
+	}
+	
 	//Constructor
 	public MenuScreen (Game game) {
 	    super(game);
+	    init();
 	}
 
 	/**
@@ -520,6 +528,7 @@ public class MenuScreen extends AbstractGameScreen {
 		String currentLevel = Constants.LEVEL_01;
 		GameScreen tmp = new GameScreen(game);
 		tmp.currentLevel = currentLevel;
+		AudioManager.instance.play(Assets.instance.music.song02);
 		game.setScreen(tmp);
 	}
 

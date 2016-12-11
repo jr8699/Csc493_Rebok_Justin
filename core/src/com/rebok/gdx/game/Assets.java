@@ -183,13 +183,20 @@ public class Assets implements Disposable, AssetErrorListener {
 	 */
 	public class AssetLavaBlocks {
 	    public final AtlasRegion lavaBlock; //lavablock
+	    public final Animation animLavaBlock; //lavablock animation
 
 	    /**
 	     * Constructor for the feather asset
 	     * @param atlas
 	     */
 	    public AssetLavaBlocks (TextureAtlas atlas) {
-	        lavaBlock = atlas.findRegion("lava_block");
+	        lavaBlock = atlas.findRegion("item_lava_block");
+	        
+	        Array<AtlasRegion> regions = atlas.findRegions("anim_lavablock");
+	        AtlasRegion region = regions.first();
+	        for (int i = 0; i < 5; i++)
+	        regions.insert(0, region);
+	        animLavaBlock = new Animation(1.0f / 20.0f, regions, Animation.PlayMode.LOOP);
 	    }
 	}
 
@@ -296,13 +303,18 @@ public class Assets implements Disposable, AssetErrorListener {
 	 */
 	public class AssetMusic {
 		public final Music song01; //1st song of our game
+		public final Music song02;
 
 		/**
 		 * Load our song
 		 * @param am
 		 */
 		public AssetMusic (AssetManager am) {
-			song01 = am.get("../rebok-gdx-game-core/assets/music/keith303_-_brand_new_highscore.mp3", Music.class);
+			//song01 = am.get("../rebok-gdx-game-core/assets/music/menu_song.wav", Music.class);
+			song01 = Gdx.audio.newMusic(Gdx.files
+		            .internal("../rebok-gdx-game-core/assets/music/menu_song.wav"));
+			song02 = Gdx.audio.newMusic(Gdx.files
+		            .internal("../rebok-gdx-game-core/assets/music/menu_song2.wav"));
 		}
 	}
 

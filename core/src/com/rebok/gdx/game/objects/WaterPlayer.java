@@ -75,7 +75,9 @@ public class WaterPlayer extends AbstractGameObject {
 	 * @param jumpKeyPressed
 	 */
 	public void setJumping (boolean jumpKeyPressed) {
+		//AudioManager.instance.play(Assets.instance.sounds.jump);
 		if(jumpKeyPressed && canJump){
+			AudioManager.instance.play(Assets.instance.sounds.jump);
 			jump = true;
 		}else{
 			jump = false;
