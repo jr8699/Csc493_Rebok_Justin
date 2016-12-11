@@ -1,10 +1,12 @@
 package com.rebok.gdx.game.screens;
 
 import com.badlogic.gdx.Game;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -355,7 +357,13 @@ public class MenuScreen extends AbstractGameScreen {
 	    // + Bunny
 	    imgBunny = new Image(skinCanyonBunny, "bunny");
 	    layer.addActor(imgBunny);
-	    imgBunny.setPosition(355, 40);
+	    imgBunny.addAction(sequence(  
+	  moveTo(655, 510),  
+	  delay(4.0f),  
+	  moveBy(-70, -100, 0.5f, Interpolation.fade),  
+	  moveBy(-100, -50, 0.5f, Interpolation.fade),  
+	  moveBy(-150, -300, 1.0f, Interpolation.elasticIn)));
+	    //imgBunny.setPosition(355, 40);
 	    return layer;
 	}
 
@@ -369,11 +377,33 @@ public class MenuScreen extends AbstractGameScreen {
 		layer.left().top();
 		// + Game Logo
 		imgLogo = new Image(skinCanyonBunny, "logo");
-		layer.add(imgLogo);
-		layer.row().expandY();
+		//layer.add(imgLogo);
+		layer.addActor(imgLogo);
+		//layer.row().expandY();
+		imgLogo.setOrigin(imgLogo.getWidth() / 2, 
+				imgLogo.getHeight() / 2);
+		imgLogo.addAction(sequence( 
+				    moveTo(50, -100), 
+				    scaleTo(0, 0), 
+				    fadeOut(0), 
+				    delay(2.5f),
+				  parallel(moveBy(0, 100, 0.5f, Interpolation.swingOut),  
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),  
+				alpha(1.0f, 0.5f))));
 		// + Info Logos
 		imgInfo = new Image(skinCanyonBunny, "info");
-		layer.add(imgInfo).bottom();
+		layer.addActor(imgInfo);
+		//layer.row().expandY();
+		imgInfo.setOrigin(imgInfo.getWidth() / 2, 
+				imgInfo.getHeight() / 2);
+		imgInfo.addAction(sequence( 
+				    moveTo(0, 300), 
+				    scaleTo(0, 0), 
+				    fadeOut(0), 
+				    delay(2.5f),
+				  parallel(moveBy(0, 100, 0.5f, Interpolation.swingOut),  
+				scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),  
+				alpha(1.0f, 0.5f))));
 		if (debugEnabled) layer.debug();
 		return layer;
 		//chkShowFpsCounter.setChecked(prefs.showFpsCounter);
