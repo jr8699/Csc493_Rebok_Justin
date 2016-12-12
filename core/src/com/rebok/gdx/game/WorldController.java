@@ -42,19 +42,18 @@ public class WorldController extends InputAdapter{
 	public float livesVisual; //visual lives
 	public float scoreVisual; //visual score
 
-	// Rectangles for collision detection
 	private float timeLeftGameOverDelay; //level time left
 
 	public Array<Body> objectsToRemove; //for box2d physics
-	public World myWorld;
+	public World myWorld; //box2d world
 
-	private Game game;
+	private Game game; //the game
 
 	//for the sensors
 	private short coinMask = 0x001;
 	private short playerMask = 0x002;
 
-	private boolean enteredScore;
+	private boolean enteredScore; //score from prompt
 
 	private String currentLevel; //this is the beginning level
 	
@@ -225,7 +224,7 @@ public class WorldController extends InputAdapter{
 		fixtureDef.shape = polygonShape;
 		fixtureDef.filter.categoryBits = playerMask;
 		fixtureDef.filter.maskBits = coinMask;
-		// fixtureDef.friction = 0.5f;
+		 fixtureDef.friction = 0.5f;
 		body.createFixture(fixtureDef);
 		polygonShape.dispose();
 	}
@@ -375,7 +374,7 @@ public class WorldController extends InputAdapter{
 	 */
 	public void update(float deltaTime) {
 		handleDebugInput(deltaTime);
-		if(lavaParticle != null)
+		if(lavaParticle != null) //grab particle from a lava object so it doesnt get destroyed
 			lavaParticle.update(deltaTime);
 		if(isGoalCollected()){ //switch levels
 			if(currentLevel == Constants.LEVEL_01){
@@ -389,7 +388,7 @@ public class WorldController extends InputAdapter{
 			}
 		}
 		
-		if (isGameOver()) {
+		if (isGameOver()) { //player died
 		timeLeftGameOverDelay -= deltaTime;
 		if (timeLeftGameOverDelay< 0)
 			backToMenu();

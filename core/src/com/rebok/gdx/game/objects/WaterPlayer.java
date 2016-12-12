@@ -12,6 +12,11 @@ import com.rebok.gdx.game.util.Constants;
 import com.rebok.gdx.game.util.GamePreferences;
 import com.rebok.gdx.game.util.CharacterSkin;
 
+/**
+ * The player of the game
+ * @author Justin
+ *
+ */
 public class WaterPlayer extends AbstractGameObject {
 	public static final String TAG = WaterPlayer.class.getName(); //libgdx tag
 	private final float JUMP_TIME_MAX = 0.6f; //max time of a jump
@@ -25,13 +30,13 @@ public class WaterPlayer extends AbstractGameObject {
 	
 	public VIEW_DIRECTION viewDirection;
 	public float timeJumping;
-	public boolean hasLavaPowerup;
+	public boolean hasLavaPowerup; //power up stuff
 	public float timeLeftLavaPowerup;
 	public float timeLeftIcePowerup;
 	public boolean hasIcePowerup;
 	
-	public boolean jump;
-	public boolean canJump;
+	public boolean jump; //player jumped
+	public boolean canJump; //can the player jump
 	public boolean right; //movement
 	public boolean left;
 	
@@ -77,7 +82,7 @@ public class WaterPlayer extends AbstractGameObject {
 	public void setJumping (boolean jumpKeyPressed) {
 		//AudioManager.instance.play(Assets.instance.sounds.jump);
 		if(jumpKeyPressed && canJump){
-			AudioManager.instance.play(Assets.instance.sounds.jump);
+			AudioManager.instance.play(Assets.instance.sounds.jump); //player jump sound
 			jump = true;
 		}else{
 			jump = false;

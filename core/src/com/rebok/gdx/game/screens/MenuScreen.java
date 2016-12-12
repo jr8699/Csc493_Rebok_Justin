@@ -354,10 +354,10 @@ public class MenuScreen extends AbstractGameScreen {
 	 */
 	private Table buildObjectsLayer () {
 	    Table layer = new Table();
-	    // + Bunny
+	    // + waterplayer
 	    imgBunny = new Image(skinCanyonBunny, "bunny");
 	    layer.addActor(imgBunny);
-	    imgBunny.addAction(sequence(  
+	    imgBunny.addAction(sequence(  //move
 	  moveTo(655, 510),  
 	  delay(4.0f),  
 	  moveBy(-70, -100, 0.5f, Interpolation.fade),  
@@ -382,7 +382,7 @@ public class MenuScreen extends AbstractGameScreen {
 		//layer.row().expandY();
 		imgLogo.setOrigin(imgLogo.getWidth() / 2, 
 				imgLogo.getHeight() / 2);
-		imgLogo.addAction(sequence( 
+		imgLogo.addAction(sequence( //fade
 				    moveTo(50, -100), 
 				    scaleTo(0, 0), 
 				    fadeOut(0), 
@@ -396,7 +396,7 @@ public class MenuScreen extends AbstractGameScreen {
 		//layer.row().expandY();
 		imgInfo.setOrigin(imgInfo.getWidth() / 2, 
 				imgInfo.getHeight() / 2);
-		imgInfo.addAction(sequence( 
+		imgInfo.addAction(sequence( //fade
 				    moveTo(0, 300), 
 				    scaleTo(0, 0), 
 				    fadeOut(0), 

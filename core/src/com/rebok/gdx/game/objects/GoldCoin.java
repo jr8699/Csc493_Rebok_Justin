@@ -14,7 +14,7 @@ import com.rebok.gdx.game.Assets;
 public class GoldCoin extends AbstractGameObject{
 	private TextureRegion regGoldCoin; //for the texture
 	public boolean collected; //whether the coin was collected or not
-	public boolean toRemove;
+	public boolean toRemove; //to remove from the box2d world
 	
 	public GoldCoin () {
 		init();

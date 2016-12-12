@@ -49,12 +49,10 @@ public class Highscores {
 	 */
 	private int parseScore(String s){
 		int i = 0;
-		while(s.charAt(i) != '-') i++;
+		while(s.charAt(i) != '-') i++; //jump to score section
 		i+=2;
 		String subString = "";
-		while(i < s.length()) subString = subString + s.charAt(i++);
-		System.out.println(subString);
-		System.out.println(Integer.parseInt(subString));
+		while(i < s.length()) subString = subString + s.charAt(i++); //parse the score
 		return Integer.parseInt(subString);
 	}
 	/**
@@ -62,7 +60,7 @@ public class Highscores {
 	 * @param i
 	 */
 	private void moveScores(int i){
-		for(int j = numHighscores-1; j > i; j--){ //pull up the list
+		for(int j = numHighscores-1; j < i-1; j--){ //pull up the list
 			highscores.insert(j+1,highscores.get(j));
 		}
 	}
@@ -73,15 +71,14 @@ public class Highscores {
 	 */
 	public void addElement(String s){
 		for(int i= 0;i< numHighscores;i++){
-			if(parseScore(highscores.get(i)) <= parseScore(s)){
-				System.out.println(s);
-				System.out.println(highscores.get(0));
-				moveScores(i);
-				highscores.insert(i,s);
+			if(parseScore(highscores.get(i)) <= parseScore(s)){ //compare scores
+				moveScores(i); //move down
+				highscores.insert(i,s); //insert into the index
 				setNumber(numHighscores + 1);
 				return;
 			}
 		}
+		//if no highscores in the list
 		setNumber(numHighscores + 1);
 		highscores.add(s);
 	}
@@ -109,7 +106,6 @@ public class Highscores {
 	 * Save our highscores
 	 */
 	public void save () {
-		//load(); //load to pick the highest 3
 		prefs.putInteger("number", numHighscores);
 		for(int i=0;i<numHighscores;i++){
 			prefs.putString("score" + i, highscores.get(i));

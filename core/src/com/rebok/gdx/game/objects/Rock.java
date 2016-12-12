@@ -102,5 +102,6 @@ public class Rock extends AbstractGameObject{
 			floatTargetPosition.y += FLOAT_AMPLITUDE * (floatingDownwards ? -1 : 1);
 		}
 		position.lerp(floatTargetPosition, deltaTime);
+		body.setTransform(this.position,body.getAngle());
 	}	
 }

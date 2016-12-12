@@ -18,8 +18,8 @@ public class GameScreen extends AbstractGameScreen {
 	private WorldController worldController; //the world controller
 	private WorldRenderer worldRenderer; //the world renderer
 	private boolean paused; //if paused
-	public Highscores scores = Highscores.instance;
-	public String currentLevel;
+	public Highscores scores = Highscores.instance; //highscores
+	public String currentLevel; //level to load worldcontroller with
 
 	//Constructor
 	public GameScreen (Game game) {

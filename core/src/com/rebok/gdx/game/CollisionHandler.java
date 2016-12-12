@@ -26,7 +26,7 @@ import com.rebok.gdx.game.Level;
 public class CollisionHandler implements ContactListener {
     private ObjectMap<Short, ObjectMap<Short, ContactListener>> listeners; //our list of objects w/ box2d physics
     private WorldController world; //the world
-    private Level level;
+    private Level level; //the level
 
     //Constructor
     public CollisionHandler(WorldController w)
@@ -105,6 +105,9 @@ public class CollisionHandler implements ContactListener {
     {
         Fixture fixtureA = contact.getFixtureA();
         Fixture fixtureB = contact.getFixtureB();
+        if(fixtureA.getBody().getUserData() instanceof WaterPlayer){
+        	fixtureA.setFriction(0.5f); //if under effect of ice, set friction back when flying
+        }
         ContactListener listener = getListener(fixtureA.getFilterData().categoryBits, fixtureB.getFilterData().categoryBits);
         if (listener != null)
         {
@@ -173,9 +176,11 @@ public class CollisionHandler implements ContactListener {
      */
     private void processPlayerContact(Fixture playerFixture, Fixture objFixture)
     {
-    	if (objFixture.getBody().getUserData() instanceof Rock)
+    	if(playerFixture.getBody().getUserData() instanceof WaterPlayer){
+        	if(((WaterPlayer)playerFixture.getBody().getUserData()).hasIcePowerup) playerFixture.setFriction(0.5f); //if under effect of ice, set friction to 0 on contact
+        }
+    	if (objFixture.getBody().getUserData() instanceof Rock) //player vs. rock
     	{
-    		System.out.println("Collision");
     		WaterPlayer player = (WaterPlayer)playerFixture.getBody().getUserData();
     	    playerFixture.getBody().setLinearVelocity(player.velocity);
     	    level.waterPlayer.canJump = true;
@@ -184,7 +189,7 @@ public class CollisionHandler implements ContactListener {
 				player.dustParticles.start();
 			}
     	}
-    	else if (objFixture.getBody().getUserData() instanceof GoldCoin)
+    	else if (objFixture.getBody().getUserData() instanceof GoldCoin) //player vs. gold coin
     	{
     		// Remove the block update the player's score by 1.
     		world.score++;
@@ -195,21 +200,22 @@ public class CollisionHandler implements ContactListener {
     		Body block = objFixture.getBody();
     		((GoldCoin)block.getUserData()).toRemove = true; //for removal
     		world.flagForRemoval(block);
-    	}else if (objFixture.getBody().getUserData() instanceof LavaBlock){
+    	}else if (objFixture.getBody().getUserData() instanceof LavaBlock){ //player vs. lava block
     		AudioManager.instance.play(Assets.instance.sounds.pickupLava);
     		WaterPlayer p = (WaterPlayer)playerFixture.getBody().getUserData();
     		p.setLavaPowerup(true);
     		Body block = objFixture.getBody();
     		((LavaBlock)block.getUserData()).toRemove = true; //for removal
     		world.flagForRemoval(block);
-    	}else if (objFixture.getBody().getUserData() instanceof IceBlock){
+    	}else if (objFixture.getBody().getUserData() instanceof IceBlock){ //player vs ice block
     		AudioManager.instance.play(Assets.instance.sounds.pickupLava);//same sound for ice
     		WaterPlayer p = (WaterPlayer)playerFixture.getBody().getUserData();
     		p.setIcePowerup(true);
+    		playerFixture.setFriction(0);
     		Body block = objFixture.getBody();
     		((IceBlock)block.getUserData()).toRemove = true; //for removal
     		world.flagForRemoval(block);
-    	}else if (objFixture.getBody().getUserData() instanceof Goal){
+    	}else if (objFixture.getBody().getUserData() instanceof Goal){ //player vs. goal
     		WaterPlayer p = (WaterPlayer)playerFixture.getBody().getUserData();
     		p.setIcePowerup(true);
     		Body block = objFixture.getBody();

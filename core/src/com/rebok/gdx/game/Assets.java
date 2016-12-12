@@ -194,7 +194,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	        
 	        Array<AtlasRegion> regions = atlas.findRegions("anim_lavablock");
 	        AtlasRegion region = regions.first();
-	        for (int i = 0; i < 5; i++)
+	        for (int i = 0; i < 5; i++) //grab animation
 	        regions.insert(0, region);
 	        animLavaBlock = new Animation(1.0f / 20.0f, regions, Animation.PlayMode.LOOP);
 	    }
@@ -209,7 +209,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	    public final AtlasRegion ice; //ice
 
 	    /**
-	     * Constructor for the feather asset
+	     * Constructor for the ice block
 	     * @param atlas
 	     */
 	    public AssetIceBlocks (TextureAtlas atlas) {
