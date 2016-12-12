@@ -312,9 +312,9 @@ public class Assets implements Disposable, AssetErrorListener {
 		public AssetMusic (AssetManager am) {
 			//song01 = am.get("../rebok-gdx-game-core/assets/music/menu_song.wav", Music.class);
 			song01 = Gdx.audio.newMusic(Gdx.files
-		            .internal("../rebok-gdx-game-core/assets/music/menu_song.wav"));
+		            .internal("../rebok-gdx-game-core/assets/music/menu_song.mp3"));
 			song02 = Gdx.audio.newMusic(Gdx.files
-		            .internal("../rebok-gdx-game-core/assets/music/menu_song2.wav"));
+		            .internal("../rebok-gdx-game-core/assets/music/menu_song2.mp3"));
 		}
 	}
 
