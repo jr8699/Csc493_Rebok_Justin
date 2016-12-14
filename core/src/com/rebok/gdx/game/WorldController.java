@@ -30,7 +30,7 @@ import com.rebok.gdx.game.util.Highscores;
 
 /**
  * Controls the world
- * @author Justin
+ * @author Justin Rebok
  *
  */
 public class WorldController extends InputAdapter{
